@@ -1,0 +1,51 @@
+'use client';
+import { useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import Hero from '@/components/about-us/Hero';
+
+const Radios = dynamic(() => import('@/components/about-us/Radios'), { ssr: false });
+const Values = dynamic(() => import('@/components/about-us/Values'), { ssr: false });
+
+export default function AboutUs() {
+  useEffect(() => {
+    document.title = 'Sobre Nosotros | Radio Columbia - Conoce Nuestra Historia';
+    
+    const description = 'Conoce la historia de Radio Columbia, tu estación de radio costarricense. Descubre nuestra misión, valores y el equipo que hace posible la mejor música y noticias de Costa Rica las 24 horas.';
+    
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', description);
+    } else {
+      metaDescription = document.createElement('meta');
+      metaDescription.name = 'description';
+      metaDescription.content = description;
+      document.head.appendChild(metaDescription);
+    }
+    
+    const keywords = 'radio columbia historia, sobre nosotros, equipo radio, misión radio costa rica, valores radio columbia';
+    
+    let metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords) {
+      metaKeywords.setAttribute('content', keywords);
+    } else {
+      metaKeywords = document.createElement('meta');
+      metaKeywords.name = 'keywords';
+      metaKeywords.content = keywords;
+      document.head.appendChild(metaKeywords);
+    }
+  }, []);
+
+  return (
+    <>
+      <div className="min-h-screen  ">
+        <Navbar />
+        <Hero />
+        <Radios />
+        <Values />
+      </div>
+      <Footer />
+    </>
+  );
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Radio Columbia",
+  "short_name": "Columbia",
+  "description": "Tu estación de radio costarricense con las últimas noticias, deportes, música y entretenimiento",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8FBFF",
+  "theme_color": "#1E305F",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/assets/LogoColumbia.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["news", "music", "entertainment"],
+  "lang": "es-CR",
+  "dir": "ltr"
+} 
