@@ -19,7 +19,7 @@ export default function NewsCard({ post }: NewsCardProps) {
   return (
     <Link href={`/news/${post.slug}`}>
       <article className="group overflow-hidden hover:scale-[1.02] transition-all duration-700">
-        <div className="relative aspect-[16/11] bg-[#D4D5DD] rounded-2xl">
+        <div className="relative aspect-[16/11] bg-[#FFFFFF]/5 rounded-sm">
           <Image
             src={featuredImage}
             alt={cleanTitle(post.title.rendered)}
@@ -29,19 +29,19 @@ export default function NewsCard({ post }: NewsCardProps) {
           />
         </div>
 
-        <div className="py-5">
-          <div className="flex justify-between items-center mb-3">
-            <span className="text-[#01A299] border-[1.4px] border-[#01A299] px-4 py-[4px] rounded-full bg-transparent text-sm font-medium">
-                 {category}
+        <div className="py-6">
+          <div className="flex gap-2 items-center mb-1 font-medium text-[#FFFFFF]/40">
+            <span className="text-[#D92A34] rounded-full bg-transparent text-sm font-semibold">
+            {category}
             </span>
-
-            <span className="text-sm font-medium text-[#272727]/50">
-              {formatDate(post.date)}
+            •
+            <span className="text-sm font-medium text-[#FFFFFF]/40">
+            {formatDate(post.date)}
             </span>
           </div>
 
-          <h3 className="text-md md:text-xl font-medium text-[#2F3037] line-clamp-2">
-            {cleanTitle(post.title.rendered)}
+          <h3 className="text-md md:text-xl font-medium text-[#FFFFFF]/70 line-clamp-2 titlecase">
+          {cleanTitle(post.title.rendered)}
           </h3>
         </div>
       </article>

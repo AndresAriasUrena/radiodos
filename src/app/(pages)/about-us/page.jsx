@@ -4,9 +4,7 @@ import dynamic from 'next/dynamic';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Hero from '@/components/about-us/Hero';
-
-const Radios = dynamic(() => import('@/components/about-us/Radios'), { ssr: false });
-const Values = dynamic(() => import('@/components/about-us/Values'), { ssr: false });
+import CategoryNewsGrid from '@/components/home/CategoryNewsGrid';
 
 export default function AboutUs() {
   useEffect(() => {
@@ -42,8 +40,9 @@ export default function AboutUs() {
       <div className="min-h-screen  ">
         <Navbar />
         <Hero />
-        <Radios />
-        <Values />
+        <CategoryNewsGrid
+              title="Noticias"
+            />
       </div>
       <Footer />
     </>

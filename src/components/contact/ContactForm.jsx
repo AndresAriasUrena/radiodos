@@ -12,7 +12,7 @@ const ContactForm = () => {
             Puede comunicarse con nosotros por los diferentes medios disponibles. También puedes llenar el formulario y pronto un asesor se comunicará con tu petición.
           </p>
           <div className="flex flex-col lg:flex-row gap-4 w-full items-center lg:items-start">
-          <div className="text-center lg:text-left">
+            <div className="text-center lg:text-left">
               <p className="font-semibold text-[#FFFFFF]/80 mb-1">Centro de llamadas</p>
               <p className="text-[#FFFFFF]/50 text-md">Comunícate en el horario de<br />
                 <a href="tel:+50622240707" className="text-[#DF4B54] hover:underline font-bold">
@@ -30,7 +30,7 @@ const ContactForm = () => {
             </div>
           </div>
         </div>
-        <div className="w-full lg:border-l-2 border-[#141414] px-4 py-4 lg:py-12">
+        <div className="w-full lg:border-l-2 border-[#141414] px-4 py-4 lg:py-12 overflow-hidden">
           <script src="https://static.elfsight.com/platform/platform.js" async></script>
           <div className="elfsight-app-bfe684e8-5909-480e-a7c1-ec995daafc23" data-elfsight-app-lazy></div>
         </div>

@@ -74,7 +74,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="es-CR">
+    <html lang="es-CR" className="overflow-x-hidden">
       <head>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-2T6Z9LG0JD"

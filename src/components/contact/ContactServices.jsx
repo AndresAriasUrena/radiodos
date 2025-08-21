@@ -28,7 +28,7 @@ const ContactServices = () => {
       <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 items-center justify-between">
         <div className="w-full h-full grid grid-rows-3">
           {features.map((feature, index) => (
-            <div key={index} className="flex items-center gap-4 px-4 sm:px-8 py-8 border-b border-[#141414] pb-8">
+            <div key={index} className="flex flex-col lg:flex-row text-center lg:text-left items-center gap-4 px-4 sm:px-8 py-8 border-b border-[#141414] pb-8">
               <div className="w-24 h-24 bg-[#D51F2F] rounded-full flex items-center justify-center flex-shrink-0 border-2 border-black">
                 {feature.icon}
               </div>
@@ -43,8 +43,8 @@ const ContactServices = () => {
         </div>
 
         <div className="w-full lg:border-l-2 border-[#141414] px-4 sm:px-8 py-8 h-full flex flex-col justify-center items-center lg:items-start text-center lg:text-left">
-        <h2 className="text-5xl lg:text-7xl font-semibold text-[#FFFFFF]/80 leading-none uppercase">
-        PAUTE<br />CON NOSOTROS
+          <h2 className="text-5xl lg:text-7xl font-semibold text-[#FFFFFF]/80 leading-none uppercase">
+            PAUTE<br />CON NOSOTROS
           </h2>
           <p className="text-[#FFFFFF]/50 text-lg mb-8 max-w-lg">
             Convierte tu emprendimiento en grande y llévalo a todas partes del territorio Nacional y además de grandes radioescuchas alrededor del mundo.
