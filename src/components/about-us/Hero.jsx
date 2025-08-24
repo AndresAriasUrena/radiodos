@@ -9,7 +9,7 @@ const Hero = () => {
     <section className="flex flex-col items-center justify-center bg-[#000000] border-t border-b border-[#141414]">
       <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between">
         <div className="w-full lg:w-[60%] flex flex-col items-center lg:items-start text-center lg:text-left mb-8 lg:mb-0 px-4 sm:px-8 py-8">
-          <div className="w-full h-[280px] sm:h-[340px] lg:h-[440px] bg-[#1a1a1a] rounded-xl mb-6 lg:mb-0"></div>
+          <div className="w-full h-[280px] sm:h-[340px] lg:h-[440px] bg-[#FFFFFF]/5 rounded-xl mb-6 lg:mb-0"></div>
         </div>
 
         <div className="w-full lg:w-[40%] flex flex-col items-center lg:items-start text-center lg:text-left mb-8 lg:mb-0 px-4 sm:px-8 py-8">
@@ -22,7 +22,7 @@ const Hero = () => {
           <div className="flex flex-col sm:flex-row gap-4 w-full items-center lg:items-start">
             <button
               onClick={playRadio}
-              className="bg-[#D51F2F] border border-[#D51F2F] text-white px-6 py-3 sm:px-8 sm:py-4 rounded-md font-medium text-base sm:text-lg hover:scale-105 transition-all duration-300 flex items-center gap-2"
+              className="bg-[#D51F2F] border border-[#D51F2F] text-white px-4 py-2 rounded-md font-medium text-base sm:text-lg hover:scale-105 transition-all duration-300 flex items-center gap-2"
             >
               Escuchar ahora
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -31,7 +31,7 @@ const Hero = () => {
             </button>
             <Link
               href="/news"
-              className="hover:border-[#D92A34] hover:text-[#FFFFFF]/80 text-[#FFFFFF]/60 bg-[#FFFFFF]/5 border border-[#FFFFFF]/15 rounded-md px-6 py-3 sm:px-8 sm:py-4 hover:bg-[#D92A34] font-medium text-base sm:text-lg flex items-center transition-all duration-300"
+              className="hover:border-[#D92A34] hover:text-[#FFFFFF]/80 text-[#FFFFFF]/60 bg-[#FFFFFF]/5 border border-[#FFFFFF]/15 rounded-md px-4 py-2 hover:bg-[#D92A34] font-medium text-base sm:text-lg flex items-center transition-all duration-300"
             >
               Ver noticias
             </Link>
@@ -39,7 +39,7 @@ const Hero = () => {
         </div>
       </div>
 
-      <div className='w-full h-[2px] bg-[#141414]'></div>
+      <div className='w-full h-[2px] bg-[#141414]'/>
 
       <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between">
         <div className="w-full lg:w-[40%] flex flex-col items-center lg:items-start text-center lg:text-left mb-8 lg:mb-0 px-4 sm:px-8 py-8 order-2 lg:order-1">
@@ -53,7 +53,7 @@ const Hero = () => {
           <div className="flex flex-col sm:flex-row gap-4 w-full items-center lg:items-start">
             <Link
               href="/shows"
-              className="bg-[#D51F2F] text-white px-6 py-3 sm:px-8 sm:py-4 rounded-md font-medium text-base sm:text-lg hover:scale-105 transition-all duration-300 flex items-center gap-2"
+              className="bg-[#D51F2F] text-white px-4 py-2 rounded-md font-medium text-base sm:text-lg hover:scale-105 transition-all duration-300 flex items-center gap-2"
             >
               Ver shows
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -64,7 +64,7 @@ const Hero = () => {
         </div>
 
         <div className="w-full lg:w-[60%] flex flex-col items-center lg:items-start text-center lg:text-left mb-8 lg:mb-0 px-4 sm:px-8 py-8 order-1 lg:order-2">
-          <div className="w-full h-[280px] sm:h-[340px] lg:h-[440px] bg-[#1a1a1a] rounded-xl mb-6 lg:mb-0"></div>
+          <div className="w-full h-[280px] sm:h-[340px] lg:h-[440px] bg-[#FFFFFF]/5 rounded-xl mb-6 lg:mb-0"></div>
         </div>
       </div>
     </section>

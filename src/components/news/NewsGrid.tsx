@@ -154,8 +154,8 @@ export default function NewsGrid({ filters, onOpenFilters, title = 'Noticias', p
             <p className="text-[#C7C7C7] mb-4">{error}</p>
             <button
               onClick={handleRetry}
-              className="text-white bg-[#1E305F] px-4 py-2 rounded-md hover:bg-[#D51F2F] transition-colors"
-            >
+              className="text-[#D92A34] border border-[#D92A34] px-4 py-2 rounded-md hover:text-white hover:bg-[#D92A34] transition-colors duration-300"
+              >
               Reintentar
             </button>
           </div>
@@ -165,14 +165,14 @@ export default function NewsGrid({ filters, onOpenFilters, title = 'Noticias', p
   }
 
   return (
-    <div className="px-4 sm:px-6 py-8 sm:py-12 lg:py-16 bg-[#F8FBFF] mx-2 my-4 rounded-2xl">
-      <div className="flex-1 max-w-7xl mx-auto">
+    <div className="bg-[#000000]">
+      <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-2">
           <div className="w-full">
             <div className="flex items-center justify-between mb-2">
               <div className="flex flex-col gap-2">
-                <h2 className="font-semibold text-lg md:text-2xl text-[#1B1B1B]">{title}</h2>
-                <p className="text-sm text-[#64748B] hidden md:block">
+                <h2 className="font-semibold text-lg md:text-2xl text-[#FFFFFF]/80">{title}</h2>
+                <p className="text-sm text-[#FFFFFF]/40 hidden md:block">
                   {loading && posts.length === 0 
                     ? 'Cargando...' 
                     : `${posts.length} de ${totalPosts} noticias encontradas`}
@@ -181,13 +181,12 @@ export default function NewsGrid({ filters, onOpenFilters, title = 'Noticias', p
               </div>
               <button
                 onClick={onOpenFilters}
-                className="lg:hidden flex items-center gap-2 bg-[#1E305F] text-white px-3 py-2 rounded-md hover:bg-[#D51F2F] transition-colors"
+                className="lg:hidden flex items-center gap-2 bg-[#D92A34] text-white px-3 py-2 rounded-md hover:bg-[#b71724] transition-colors"
               >
                 <IoFilter className="w-4 h-4" />
                 <span className="text-sm font-semibold">Filtros</span>
               </button>
             </div>
-            <div className="h-0.5 w-full bg-[#D4D5DD] my-3" />
           </div>
         </div>
 
@@ -195,9 +194,9 @@ export default function NewsGrid({ filters, onOpenFilters, title = 'Noticias', p
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {Array.from({ length: INITIAL_LOAD }).map((_, index) => (
               <div key={index} className="animate-pulse">
-                <div className="bg-[#D4D5DD] aspect-[16/11] rounded-2xl mb-4"></div>
-                <div className="h-4 bg-[#D4D5DD] rounded mb-2"></div>
-                <div className="h-4 bg-[#D4D5DD] rounded w-2/3"></div>
+                <div className="bg-[#FFFFFF]/5 aspect-[16/11] rounded-sm mb-4"></div>
+                <div className="h-4 bg-[#FFFFFF]/5 rounded mb-2"></div>
+                <div className="h-4 bg-[#FFFFFF]/5 rounded w-2/3"></div>
               </div>
             ))}
           </div>
@@ -215,7 +214,7 @@ export default function NewsGrid({ filters, onOpenFilters, title = 'Noticias', p
               <div className="text-center mt-8">
                 <button
                   onClick={handleLoadMore}
-                  className="text-[#9A9898] border border-[#9A9898] px-4 py-2 rounded-md hover:border-[#1E305F] hover:text-white hover:bg-[#1E305F] transition-colors duration-300"
+                  className="text-[#D92A34] border border-[#D92A34] px-4 py-2 rounded-md hover:text-white hover:bg-[#D92A34] transition-colors duration-300"
                 >
                   Cargar más noticias
                 </button>
@@ -226,7 +225,7 @@ export default function NewsGrid({ filters, onOpenFilters, title = 'Noticias', p
 
         {!loading && posts.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-[#C7C7C7] text-lg">
+            <p className="text-[#FFFFFF]/60 text-lg">
               No se encontraron noticias
               {searchTerm && ` para "${searchTerm}"`}
             </p>

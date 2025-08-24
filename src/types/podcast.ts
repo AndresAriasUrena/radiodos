@@ -3,7 +3,6 @@ export interface Author {
   description: string;
   imageUrl: string;
   instagramUrl?: string;
-  status: 'podcast' | 'radionovela';
   podcastName: string;
   podcastId: string;
 }
@@ -20,7 +19,7 @@ export interface PodcastShow {
   category?: string;
   lastBuildDate?: string;
   authors?: Author[];
-  status: 'podcast' | 'radionovela';
+  schedule?: string;
 }
 
 export interface PodcastEpisode {

@@ -9,7 +9,6 @@ import Link from 'next/link';
 
 interface CategoryNewsGridProps {
   title: string;
-  description?: string;
   tagSlug?: string;
   maxPosts?: number;
   showLoadMore?: boolean;
@@ -20,7 +19,6 @@ interface CategoryNewsGridProps {
 
 export default function CategoryNewsGrid({
   title,
-  description,
   tagSlug,
   showLoadMore = true,
   showCategories = false,
@@ -38,7 +36,7 @@ export default function CategoryNewsGrid({
   const [categories, setCategories] = useState<WordPressCategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('todas');
 
-  const POSTS_PER_PAGE = 3;
+  const POSTS_PER_PAGE = 4;
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -229,7 +227,7 @@ export default function CategoryNewsGrid({
           <div className={`grid ${
             cardType === 'grid' 
               ? 'grid-cols-1 space-y-4' 
-              : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6'
+              : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6'
           }`}>
             {Array.from({ length: POSTS_PER_PAGE }).map((_, index) => (
               <div key={index} className="animate-pulse">
@@ -252,7 +250,7 @@ export default function CategoryNewsGrid({
             <div className={`grid  ${
               cardType === 'grid' 
                 ? 'grid-cols-1' 
-                : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6'
+                : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6'
             }`}>
               {posts.map((post) => (
                 cardType === 'grid' ? (

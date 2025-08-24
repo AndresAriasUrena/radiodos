@@ -3,39 +3,20 @@ import { RSS_CONFIG, retryOperation } from './rssConfig';
 import * as xml2js from 'xml2js';
 
 const PODCAST_RSS_FEEDS = [
-	// PODCASTS (Programas) - YouTube Playlists
-	{ url: 'https://www.youtube.com/watch?v=WUPkfxstdlI&list=PLR6ilCH2z2UjB_B9UxjHbyt4uZQzN1UhL', status: 'podcast' as const },
-	{ url: 'https://www.youtube.com/watch?v=u2wiG9Tv5I4&list=PLR6ilCH2z2UijukrGdUfzpF449rv7pBkJ', status: 'podcast' as const },
-	{ url: 'https://www.youtube.com/watch?v=qjZAFkSQr8c&list=PLR6ilCH2z2UiBetZbuboVsDZAfbauo-5B', status: 'podcast' as const },
-
-	// RADIONOVELAS (Captivate)
-	{ url: 'https://feeds.captivate.fm/la-voluntad-de-la-pampa/', status: 'radionovela' as const },
-	{ url: 'https://feeds.captivate.fm/polvora-en-abril/', status: 'radionovela' as const },
-	{ url: 'https://feeds.captivate.fm/libertad-al-amanecer/', status: 'radionovela' as const },
+	'https://feeds.captivate.fm/la-voluntad-de-la-pampa/',
+	'https://feeds.captivate.fm/polvora-en-abril/',
+	'https://feeds.captivate.fm/libertad-al-amanecer/',
+	'https://feeds.captivate.fm/rockandlocuras/',
+	'https://feeds.captivate.fm/ride-on/',
 ];
 
-// Configuración personalizada para podcasts de YouTube
-const YOUTUBE_PODCAST_CONFIG: { [url: string]: { description?: string; imageUrl?: string; title?: string } } = {
-	// Podcast 1
-	'https://www.youtube.com/watch?v=WUPkfxstdlI&list=PLR6ilCH2z2UjB_B9UxjHbyt4uZQzN1UhL': {
-		title: 'Columbia Deportiva',
-		description: 'Cobertura de los partidos de Columbia Deportiva',
-		imageUrl: '/assets/LogoColumbiaDeportes.svg'
-	},
-	
-	// Podcast 2
-	'https://www.youtube.com/watch?v=u2wiG9Tv5I4&list=PLR6ilCH2z2UijukrGdUfzpF449rv7pBkJ': {
-		title: 'Por Tres Razones',
-		description: 'Descripción personalizada del segundo podcast de YouTube',
-		imageUrl: '/assets/PorTresRazones.avif'
-	},
-	
-	// Podcast 3
-	'https://www.youtube.com/watch?v=qjZAFkSQr8c&list=PLR6ilCH2z2UiBetZbuboVsDZAfbauo-5B': {
-		title: 'Voces',
-		description: 'Descripción personalizada del tercer podcast de YouTube',
-		imageUrl: '/assets/LogoColumbiaDeportes.svg'
-	},
+// Configuración de horarios para podcasts
+const PODCAST_SCHEDULES: { [url: string]: string } = {
+	'https://feeds.captivate.fm/la-voluntad-de-la-pampa/': 'Lunes a Viernes | 6 AM - 8 AM',
+	'https://feeds.captivate.fm/polvora-en-abril/': 'Lunes a Viernes | 8 AM - 10 AM',
+	'https://feeds.captivate.fm/libertad-al-amanecer/': 'Sábados | 10 AM - 12 PM',
+	'https://feeds.captivate.fm/rockandlocuras/': 'Sábados | 1 PM',
+	'https://feeds.captivate.fm/ride-on/': 'Lunes a Viernes | 5 PM - 7 PM',
 };
 
 // Sin autores por ahora
@@ -148,90 +129,23 @@ class RSSService {
 						return;
 					}
 
-					// Soporte Atom (YouTube playlists)
-					if (result.feed) {
-						const feed = result.feed;
-						const title = feed.title || '';
-						const description = (feed.subtitle && feed.subtitle._) || '';
-						const link = Array.isArray(feed.link) ? (feed.link.find((l: any) => l.rel === 'alternate')?.href || feed.link[0]?.href || '') : (feed.link?.href || '');
-						const language = feed['language'] || undefined;
-						const author = (feed.author && (feed.author.name || feed.author)) || undefined;
-						const category = undefined;
-						const lastBuildDate = feed.updated || undefined;
-						let image = '';
-						if (feed['media:thumbnail'] && feed['media:thumbnail'].url) {
-							image = feed['media:thumbnail'].url;
-						}
-						const entries = Array.isArray(feed.entry) ? feed.entry : [feed.entry].filter(Boolean);
-						const episodes = entries.map((entry: any) => {
-							const eTitle = entry.title || '';
-							const pubDate = entry.published || entry.updated || '';
-							let videoUrl = '';
-							if (Array.isArray(entry.link)) {
-								videoUrl = entry.link.find((l: any) => l.rel === 'alternate')?.href || entry.link[0]?.href || '';
-							} else if (entry.link && entry.link.href) {
-								videoUrl = entry.link.href;
-							}
-							let thumb = '';
-							if (entry['media:group'] && entry['media:group']['media:thumbnail'] && entry['media:group']['media:thumbnail'].url) {
-								thumb = entry['media:group']['media:thumbnail'].url;
-							}
-							return {
-								title: eTitle,
-								description: '',
-								audioUrl: videoUrl, // usamos el enlace del video como URL
-								duration: '00:00',
-								pubDate,
-								guid: entry.id || videoUrl
-							};
-						});
-
-						resolve({
-							title,
-							description: description || '',
-							image: image || '',
-							link,
-							language,
-							author,
-							category,
-							lastBuildDate,
-							episodes
-						});
-						return;
-					}
-
 					reject(new Error('Formato de feed no soportado'));
 				} catch (error) {
-					reject(new Error(`Error processing RSS/Atom data: ${(error as Error).message}`));
+					reject(new Error(`Error processing RSS data: ${(error as Error).message}`));
 				}
 			});
 		});
 	}
 
 	private async fetchRSSFeed(url: string): Promise<RSSFeedData> {
-		// Normalizar YouTube playlist a feed Atom
-		let sourceUrl = url;
-		try {
-			const isYouTube = /youtube\.com/.test(url);
-			if (isYouTube) {
-				const listMatch = url.match(/[?&]list=([^&]+)/);
-				if (listMatch && listMatch[1]) {
-					const playlistId = decodeURIComponent(listMatch[1]);
-					sourceUrl = `https://www.youtube.com/feeds/videos.xml?playlist_id=${playlistId}`;
-				}
-			}
-		} catch {
-			// mantener url original en caso de fallo
-		}
-
-		// Verificar si ya hay una petición en curso para esta URL normalizada
-		const existingRequest = this.requestQueue.get(sourceUrl);
+		// Verificar si ya hay una petición en curso para esta URL
+		const existingRequest = this.requestQueue.get(url);
 		if (existingRequest) {
 			return existingRequest;
 		}
 
 		// Verificar caché
-		const cached = this.cache.get(sourceUrl);
+		const cached = this.cache.get(url);
 		if (cached && Date.now() - cached.timestamp < RSS_CONFIG.CACHE_DURATION) {
 			return cached.data;
 		}
@@ -246,7 +160,7 @@ class RSSService {
 		this.lastRequestTime = Date.now();
 
 		const requestPromise = retryOperation(async () => {
-			const apiUrl = `/api/rss?url=${encodeURIComponent(sourceUrl)}`;
+			const apiUrl = `/api/rss?url=${encodeURIComponent(url)}`;
 			const response = await fetch(apiUrl, {
 				headers: { 'Content-Type': 'application/json' },
 				next: { revalidate: 300 }
@@ -259,27 +173,21 @@ class RSSService {
 				throw new Error(data.error);
 			}
 			const rssData = await this.parseRSSXML(data.content);
-			this.cache.set(sourceUrl, { data: rssData, timestamp: Date.now() });
+			this.cache.set(url, { data: rssData, timestamp: Date.now() });
 			return rssData;
 		}, RSS_CONFIG.MAX_RETRIES, RSS_CONFIG.RETRY_DELAY);
 
-		this.requestQueue.set(sourceUrl, requestPromise);
+		this.requestQueue.set(url, requestPromise);
 		try {
 			const result = await requestPromise;
 			return result;
 		} finally {
-			this.requestQueue.delete(sourceUrl);
+			this.requestQueue.delete(url);
 		}
 	}
 
 	async getPodcasts(): Promise<PodcastShow[]> {
-		const allPodcasts = await this.getAllPodcasts();
-		return allPodcasts.filter(podcast => podcast.status === 'podcast');
-	}
-
-	async getRadionovelas(): Promise<PodcastShow[]> {
-		const allPodcasts = await this.getAllPodcasts();
-		return allPodcasts.filter(podcast => podcast.status === 'radionovela');
+		return this.getAllPodcasts();
 	}
 
 	async getAllPodcasts(): Promise<PodcastShow[]> {
@@ -289,39 +197,39 @@ class RSSService {
 			const batch = PODCAST_RSS_FEEDS.slice(i, i + BATCH_SIZE);
 			const batchPromises = batch.map(async (rssUrl) => {
 				try {
-					const feedData = await this.fetchRSSFeed(rssUrl.url);
-					const customConfig = YOUTUBE_PODCAST_CONFIG[rssUrl.url] || {};
+					const feedData = await this.fetchRSSFeed(rssUrl);
+					const schedule = PODCAST_SCHEDULES[rssUrl] || 'Horario no disponible';
 					
 					const show: PodcastShow = {
-						id: this.generateIdFromUrl(rssUrl.url),
-						title: customConfig.title || feedData.title,
-						description: customConfig.description || feedData.description,
-						imageUrl: customConfig.imageUrl || feedData.image,
+						id: this.generateIdFromUrl(rssUrl),
+						title: feedData.title,
+						description: feedData.description,
+						imageUrl: feedData.image,
 						link: feedData.link,
-						rssUrl: rssUrl.url,
+						rssUrl: rssUrl,
 						language: feedData.language,
 						author: feedData.author,
 						category: feedData.category,
 						lastBuildDate: feedData.lastBuildDate,
 						authors: [],
-						status: rssUrl.status
+						schedule: schedule
 					};
 					return show;
 				} catch (error) {
-					console.error(`Error al procesar podcast ${rssUrl.url}:`, error);
+					console.error(`Error al procesar podcast ${rssUrl}:`, error);
 					const fallbackShow: PodcastShow = {
-						id: this.generateIdFromUrl(rssUrl.url),
+						id: this.generateIdFromUrl(rssUrl),
 						title: 'Podcast',
 						description: 'Información temporalmente no disponible',
 						imageUrl: '/assets/autores/EmmaTristan.jpeg',
-						link: rssUrl.url,
-						rssUrl: rssUrl.url,
+						link: rssUrl,
+						rssUrl: rssUrl,
 						language: 'es',
 						author: undefined,
 						category: undefined,
 						lastBuildDate: undefined,
 						authors: [],
-						status: rssUrl.status
+						schedule: 'Horario no disponible'
 					};
 					return fallbackShow;
 				}
@@ -398,13 +306,13 @@ class RSSService {
 	}
 
 	static addPodcastRSS(rssUrl: string) {
-		if (!PODCAST_RSS_FEEDS.some(feed => feed.url === rssUrl)) {
-			PODCAST_RSS_FEEDS.push({ url: rssUrl, status: 'podcast' });
+		if (!PODCAST_RSS_FEEDS.includes(rssUrl)) {
+			PODCAST_RSS_FEEDS.push(rssUrl);
 		}
 	}
 
 	static getRSSFeeds(): string[] {
-		return [...PODCAST_RSS_FEEDS.map(feed => feed.url)];
+		return [...PODCAST_RSS_FEEDS];
 	}
 
 	// Funciones de autores: no-op / sin autores

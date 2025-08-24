@@ -40,23 +40,22 @@ function NewsContent({ title }: { title: string }) {
 
   return (
     <>
-      <div className="min-h-screen overflow-hidden">        
+      <div className="min-h-screen overflow-hidden max-w-7xl mx-auto my-4 px-4 sm:px-8 py-8">        
         <div className="lg:hidden fixed bottom-20 right-4 z-50">
           <button
             onClick={() => setIsMobileFiltersOpen(true)}
-            className="bg-[#1E305F] hover:bg-[#D51F2F] text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110"
+              className="bg-[#D92A34] hover:bg-[#b71724] text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110"
           >
             <Search className="w-6 h-6" />
           </button>
         </div>
 
-        <div className="flex flex-col lg:flex-row -my-4 md:pr-4">
+        <div className="flex flex-col lg:flex-row -my-4 gap-6">
           <div className="flex-1">
             <NewsGrid 
               filters={filters} 
               onOpenFilters={() => setIsMobileFiltersOpen(true)}
               title={title}
-              parentSlugs={["noticias", "noticas", "Noticias"]}
             />
           </div>
           
@@ -66,7 +65,6 @@ function NewsContent({ title }: { title: string }) {
               onFilterChange={handleFilterChange}
               isMobileOpen={false}
               setIsMobileOpen={() => {}}
-              parentSlugs={["noticias", "noticas", "Noticias"]}
             />
           </div>
         </div>
@@ -86,7 +84,6 @@ function NewsContent({ title }: { title: string }) {
               onFilterChange={handleFilterChange}
               isMobileOpen={isMobileFiltersOpen}
               setIsMobileOpen={setIsMobileFiltersOpen}
-              parentSlugs={["noticias", "noticas", "Noticias"]}
             />
           </div>
         </div>
