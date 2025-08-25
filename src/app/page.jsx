@@ -15,13 +15,13 @@ function HomeContent() {
       <div className="min-h-screen overflow-hidden">
         <div className="flex flex-col lg:flex-row -my-4 md:pr-4">
           <div className="flex-1">
-            <Hero tagSlug="travel"/>
+            <Hero/>
             <CategoryNewsGrid
               title="últimas Noticias"
               tagSlug=""
               showCategories={true}
             />
-                  <div className='w-full h-[2px] bg-[#141414]'/>
+              <div className='w-full h-[2px] bg-[#141414]'/>
             <CategoryNewsGrid
               title="Descubre"
               tagSlug=""
