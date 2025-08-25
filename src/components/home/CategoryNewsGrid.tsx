@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import NewsCard from '../UI/NewsCard';
-import NewsCardGrid from '../UI/NewsCardGrid';
 import WordPressService from '@/lib/wordpressService';
 import { WordPressPost, WordPressCategory } from '@/types/wordpress';
 import Link from 'next/link';
@@ -253,11 +252,7 @@ export default function CategoryNewsGrid({
                 : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6'
             }`}>
               {posts.map((post) => (
-                cardType === 'grid' ? (
-                  <NewsCardGrid key={post.id} post={post} />
-                ) : (
-                  <NewsCard key={post.id} post={post} />
-                )
+                <NewsCard key={post.id} post={post} />
               ))}
             </div>
 
