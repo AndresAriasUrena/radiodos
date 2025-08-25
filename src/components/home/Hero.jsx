@@ -100,47 +100,85 @@ const Hero = () => {
 
   if (loading) {
     return (
-      <section className="h-[90vh] px-4 py-6 bg-[#000000]">
-        <div className="h-full grid grid-cols-1 lg:grid-cols-4 gap-4">
-          <div className="hidden lg:block space-y-3">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-20 bg-[#141414] rounded-xl animate-pulse border border-[#D51F2F]/20" />
-            ))}
-          </div>
-          <div className="lg:col-span-2 relative">
-            <div className="relative h-full bg-[#141414] rounded-2xl overflow-hidden animate-pulse border border-[#D51F2F]/20">
+      <section className="h-[82vh] py-4 pb-10 bg-[#000000] relative">
+        {/* Mobile controls skeleton */}
+        <div className="lg:hidden flex justify-between items-center px-4 pb-4">
+          <div className="w-24 h-10 bg-[#D51F2F]/20 rounded-lg animate-pulse"></div>
+          <div className="w-24 h-10 bg-[#141414] rounded-lg animate-pulse"></div>
+        </div>
+
+        <div className="h-full flex flex-col lg:flex-row">
+          {/* Sidebar izquierda: Podcasts skeleton - Desktop */}
+          <aside className="hidden lg:block w-[20%] h-[82vh] order-1">
+            <div className="h-full flex flex-col">
+              <div className="flex-1">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="w-full flex items-center gap-3 p-3 lg:h-[20.5vh] min-h-[120px] border-[1px] border-[#141414] bg-[#141414] animate-pulse">
+                    <div className="w-16 h-16 rounded-full bg-[#D51F2F]/20 animate-pulse"></div>
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 bg-[#D51F2F]/20 rounded w-3/4 animate-pulse"></div>
+                      <div className="h-3 bg-[#FFFFFF]/10 rounded w-1/2 animate-pulse"></div>
+                    </div>
+                    <div className="w-10 h-10 rounded-full bg-[#505050]/20 animate-pulse"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </aside>
+
+          {/* Centro: Detalle del podcast skeleton */}
+          <main className="w-full lg:w-[65%] h-[82vh] order-2">
+            <div className="relative h-full border-[2px] border-[#141414] overflow-hidden bg-[#141414] animate-pulse">
               {/* Skeleton content overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#000000]/80 via-[#000000]/40 to-[#000000]/10" />
               
               {/* Skeleton top section */}
-              <div className="absolute top-6 left-6 right-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-20 h-20 bg-[#D51F2F]/20 rounded-full animate-pulse"></div>
-                  <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-[#D51F2F]/20 rounded w-3/4 animate-pulse"></div>
-                    <div className="h-3 bg-[#FFFFFF]/10 rounded w-1/2 animate-pulse"></div>
+              <div className="absolute inset-x-0 top-0 p-6 sm:p-10">
+                <div className="flex items-center justify-between">
+                  <div className="items-center gap-4 hidden lg:flex">
+                    <div className="w-20 h-20 rounded-full bg-[#D51F2F]/20 animate-pulse"></div>
+                    <div className="flex-1 space-y-2">
+                      <div className="h-5 bg-[#D51F2F]/20 rounded w-3/4 animate-pulse"></div>
+                      <div className="h-4 bg-[#FFFFFF]/10 rounded w-1/2 animate-pulse"></div>
+                    </div>
                   </div>
+                  
+                  {/* Botón en vivo skeleton */}
+                  <div className="w-24 h-8 bg-[#D51F2F]/20 rounded-md animate-pulse"></div>
                 </div>
               </div>
               
               {/* Skeleton bottom section */}
-              <div className="absolute bottom-6 left-6 right-6">
-                <div className="space-y-3">
-                  <div className="h-3 bg-[#FFFFFF]/10 rounded w-1/3 animate-pulse"></div>
-                  <div className="h-6 bg-[#D51F2F]/20 rounded w-2/3 animate-pulse"></div>
+              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-10">
+                <div className="">
+                  <div className="flex items-center gap-2">
+                    <div className="h-4 bg-[#FFFFFF]/10 rounded w-20 animate-pulse"></div>
+                    <div className="w-2 h-4 bg-[#FFFFFF]/10 rounded animate-pulse"></div>
+                    <div className="h-4 bg-[#FFFFFF]/10 rounded w-32 animate-pulse"></div>
+                  </div>
+                  <div className="h-8 bg-[#D51F2F]/20 rounded w-2/3 animate-pulse"></div>
                   <div className="space-y-2">
-                    <div className="h-3 bg-[#FFFFFF]/10 rounded animate-pulse"></div>
-                    <div className="h-3 bg-[#FFFFFF]/10 rounded w-4/5 animate-pulse"></div>
+                    <div className="h-4 bg-[#FFFFFF]/10 rounded w-full animate-pulse"></div>
+                    <div className="h-4 bg-[#FFFFFF]/10 rounded w-4/5 animate-pulse"></div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="hidden lg:block space-y-2">
-            {Array.from({ length: 7 }).map((_, i) => (
-              <div key={i} className="h-16 bg-[#141414] rounded-xl animate-pulse border border-[#D51F2F]/20" />
-            ))}
-          </div>
+          </main>
+
+          {/* Sidebar derecha: Episodios skeleton - Desktop */}
+          <aside className="hidden lg:block w-[15%] h-[82vh] order-3">
+            <div className="h-full flex flex-col">
+              <div className="flex-1">
+                {Array.from({ length: 7 }).map((_, i) => (
+                  <div key={i} className="w-full lg:h-[11.7vh] min-h-[80px] p-3 border-[1px] border-[#141414] bg-[#141414] animate-pulse">
+                    <div className="h-4 bg-[#D51F2F]/20 rounded w-full animate-pulse mb-2"></div>
+                    <div className="h-3 bg-[#FFFFFF]/10 rounded w-1/2 animate-pulse"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </aside>
         </div>
         
         {/* Loading text */}
