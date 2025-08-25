@@ -1,19 +1,18 @@
 const siteConfig = {
-  siteName: 'Radio Columbia',
+  siteName: 'Radio2',
   siteUrl: 'https://radiodev.aurigital.com/',
-  description: 'Radio Columbia - Tu estación de radio costarricense con las últimas noticias, deportes, música y entretenimiento. Mantente informado con nuestras noticias actualizadas y disfruta de la mejor programación las 24 horas.',
-  keywords: 'radio columbia, radio costa rica, noticias costa rica, deportes costa rica, música, entretenimiento, streaming, radio en vivo, noticias costarricenses',
-  author: 'Radio Columbia',
-  twitterHandle: '@webcolumbia',
-  logo: '/assets/LogoColumbia.svg',
+  description: 'Radio2 - La nueva era de la radio digital en Costa Rica. Disfruta de música, noticias, deportes y entretenimiento con una experiencia moderna y dinámica. Transmitiendo 24/7 con la mejor calidad y programación innovadora.',
+  keywords: 'radio2, radio digital costa rica, radio online, streaming de música, noticias en vivo, radio moderna, radio interactiva, deportes en vivo, entretenimiento digital, radio streaming, radio 24/7, radio costarricense',
+  author: 'Radio2',
+  twitterHandle: '@radiodos',
+  logo: '/assets/LogoRadio2.svg',
   favicon: '/favicon.ico',
   themeColor: '#1E305F',
   backgroundColor: '#F8FBFF',
   social: {
-    facebook: 'https://www.facebook.com/NoticiasColumbia/',
-    instagram: 'https://www.instagram.com/noticiascolumbia/',
-    youtube: 'https://www.youtube.com/channel/UCo2Fr8GUPmevyi7uih-0oTg',
-    twitter: 'https://x.com/webcolumbia'
+    facebook: 'https://www.facebook.com/Radio2cr/',
+    instagram: 'https://www.instagram.com/radio2cr/',
+    twitter: 'https://x.com/radiodos',
   }
 };
 
@@ -99,7 +98,7 @@ export const generatePageMetadata = ({
 };
 
 export const generateNewsSchema = (post) => {
-  const author = post._embedded?.author?.[0]?.name || 'Radio Columbia';
+  const author = post._embedded?.author?.[0]?.name || 'Radio2';
   const category = post._embedded?.['wp:term']?.[0]?.[0]?.name || 'Noticias';
   const featuredImage = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || `${siteConfig.siteUrl}opengraph-image.jpg`;
   

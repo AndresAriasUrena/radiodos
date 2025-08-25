@@ -16,17 +16,17 @@ function NewsContent({ title }: { title: string }) {
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
   useEffect(() => {
-    document.title = 'Noticias | Radio Columbia - Últimas Noticias de Costa Rica';
+    document.title = 'Noticias | Radio2 - Últimas Noticias de Costa Rica';
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute('content', 
-        'Descubre las últimas noticias y actualidad de Costa Rica en Radio Columbia. Mantente informado con nuestras noticias de música, entretenimiento, política y más.'
+        'Descubre las últimas noticias y actualidad de Costa Rica en Radio2. Mantente informado con nuestras noticias de música, entretenimiento, política y más.'
       );
     } else {
       const meta = document.createElement('meta');
       meta.name = 'description';
-      meta.content = 'Descubre las últimas noticias y actualidad de Costa Rica en Radio Columbia. Mantente informado con nuestras noticias de música, entretenimiento, política y más.';
+              meta.content = 'Descubre las últimas noticias y actualidad de Costa Rica en Radio2. Mantente informado con nuestras noticias de música, entretenimiento, política y más.';
       document.head.appendChild(meta);
     }
 

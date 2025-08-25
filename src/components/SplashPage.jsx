@@ -26,14 +26,14 @@ export default function SplashPage() {
   if (!isVisible) return null;
 
   return (
-    <div className={`fixed inset-0 z-[9999] flex items-center justify-center bg-white transition-all duration-700 ease-in-out ${
+    <div className={`fixed inset-0 z-[9999] flex items-center justify-center bg-black transition-all duration-700 ease-in-out ${
       isAnimating ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
     }`}>
       <div className="text-center">
         {/* Logo */}
         <div className="mb-8 animate-pulse">
           <Image
-            src="/assets/LogoColumbia.svg"
+            src="/assets/LogoRadio2.svg"
             alt="Columbia"
             width={250}
             height={100}

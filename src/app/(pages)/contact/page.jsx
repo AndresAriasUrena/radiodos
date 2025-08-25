@@ -4,14 +4,13 @@ import dynamic from 'next/dynamic';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ContactForm from '@/components/contact/ContactForm';
-
-const ContactServices = dynamic(() => import('@/components/contact/ContactServices'), { ssr: false });
+import ContactServices from '@/components/contact/ContactServices';
 
 export default function Contact() {
   useEffect(() => {
-    document.title = 'Contacto | Radio Columbia - Ponte en Contacto con Nosotros';
+    document.title = 'Contacto | Radio2 - Ponte en Contacto con Nosotros';
     
-    const description = 'Contáctanos en Radio Columbia. Envíanos tus comentarios, sugerencias o consultas. Estamos aquí para atenderte y mejorar tu experiencia en nuestra radio costarricense.';
+          const description = 'Contáctanos en Radio2. Envíanos tus comentarios, sugerencias o consultas. Estamos aquí para atenderte y mejorar tu experiencia en nuestra radio costarricense.';
     
     let metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
@@ -23,7 +22,7 @@ export default function Contact() {
       document.head.appendChild(metaDescription);
     }
     
-    const keywords = 'radio columbia contacto, formulario contacto, comunicarse radio columbia, sugerencias radio, consultas radio costa rica';
+          const keywords = 'radio2 contacto, formulario contacto, comunicarse radio2, sugerencias radio, consultas radio costa rica';
     
     let metaKeywords = document.querySelector('meta[name="keywords"]');
     if (metaKeywords) {

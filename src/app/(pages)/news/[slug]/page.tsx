@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       publishedTime: null,
       author: null,
       section: null,
-      keywords: 'radio columbia, noticias costa rica, noticia no encontrada'
+      keywords: 'radio2, noticias costa rica, noticia no encontrada'
     });
   }
   const cleanTitle = post.title.rendered.replace(/<[^>]+>/g, '');
@@ -35,14 +35,14 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
   return generatePageMetadata({
     title: cleanTitle,
-    description: cleanDescription || `Lee la última noticia de ${category || 'Amplify Radio'}: ${cleanTitle}`,
+    description: cleanDescription || `Lee la última noticia de ${category || 'Radio2'}: ${cleanTitle}`,
     image: featuredImage,
     path: `/news/${post.slug}`,
     type: 'article',
     publishedTime: post.date,
     author,
     section: category,
-    keywords: `${cleanTitle}, ${category}, amplify radio, noticias, ${author}`
+    keywords: `${cleanTitle}, ${category}, radio2, noticias, ${author}`
   });
 }
 

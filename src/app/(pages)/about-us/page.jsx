@@ -8,9 +8,9 @@ import CategoryNewsGrid from '@/components/home/CategoryNewsGrid';
 
 export default function AboutUs() {
   useEffect(() => {
-    document.title = 'Sobre Nosotros | Radio Columbia - Conoce Nuestra Historia';
+    document.title = 'Sobre Nosotros | Radio2 - Conoce Nuestra Historia';
     
-    const description = 'Conoce la historia de Radio Columbia, tu estación de radio costarricense. Descubre nuestra misión, valores y el equipo que hace posible la mejor música y noticias de Costa Rica las 24 horas.';
+          const description = 'Conoce la historia de Radio2, tu estación de radio costarricense. Descubre nuestra misión, valores y el equipo que hace posible la mejor música y noticias de Costa Rica las 24 horas.';
     
     let metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
@@ -22,7 +22,7 @@ export default function AboutUs() {
       document.head.appendChild(metaDescription);
     }
     
-    const keywords = 'radio columbia historia, sobre nosotros, equipo radio, misión radio costa rica, valores radio columbia';
+          const keywords = 'radio2 historia, sobre nosotros, equipo radio, misión radio costa rica, valores radio2';
     
     let metaKeywords = document.querySelector('meta[name="keywords"]');
     if (metaKeywords) {

@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
 
-export const alt = 'Radio Columbia - Tu Estación de Radio Costarricense'
+export const alt = 'Radio2 - La Nueva Era de la Radio Digital'
 export const size = {
   width: 1200,
   height: 630,
@@ -38,12 +38,13 @@ export default async function Image() {
             style={{
               width: 120,
               height: 120,
-              backgroundColor: '#1E305F',
+              background: 'linear-gradient(135deg, #1E305F 0%, #2A4484 100%)',
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               marginRight: 40,
+              boxShadow: '0 10px 30px rgba(30, 48, 95, 0.2)',
             }}
           >
             <span
@@ -53,7 +54,7 @@ export default async function Image() {
                 fontWeight: 700,
               }}
             >
-              C
+              R2
             </span>
           </div>
           <div
@@ -68,9 +69,12 @@ export default async function Image() {
                 fontSize: 64,
                 fontWeight: 700,
                 lineHeight: 1,
+                background: 'linear-gradient(135deg, #1E305F 0%, #2A4484 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
               }}
             >
-              Radio Columbia
+              Radio2
             </span>
             <span
               style={{
@@ -80,7 +84,7 @@ export default async function Image() {
                 marginTop: 8,
               }}
             >
-              Tu Estación de Radio Costarricense
+              La Nueva Era de la Radio Digital
             </span>
           </div>
         </div>
@@ -96,14 +100,14 @@ export default async function Image() {
         >
           <span
             style={{
-              backgroundColor: '#1E305F',
+              background: 'linear-gradient(135deg, #1E305F 0%, #2A4484 100%)',
               color: 'white',
               padding: '8px 16px',
               borderRadius: 20,
               fontSize: 18,
             }}
           >
-            Noticias
+            Música Digital
           </span>
           <span
             style={{
@@ -114,7 +118,7 @@ export default async function Image() {
               fontSize: 18,
             }}
           >
-            Deportes
+            Noticias 24/7
           </span>
           <span
             style={{
@@ -129,7 +133,7 @@ export default async function Image() {
           </span>
           <span
             style={{
-              backgroundColor: '#9A9898',
+              background: 'linear-gradient(135deg, #666 0%, #888 100%)',
               color: 'white',
               padding: '8px 16px',
               borderRadius: 20,

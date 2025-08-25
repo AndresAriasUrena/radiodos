@@ -7,7 +7,7 @@ const Footer = () => {
             <div className="container mx-auto max-w-7xl px-4 sm:px-8 py-8 w-full">
                 <div className="flex flex-col lg:flex-row gap-4 justify-between items-start mb-12">
                     <div className="mb-8 md:mb-0 max-w-xs mx-auto lg:mx-0 text-center lg:text-left flex flex-col items-center lg:items-start">
-                        <img src="/assets/LogoRadio2.svg" alt="Columbia" className="w-28 mb-3" />
+                        <img src="/assets/LogoRadio2.svg" alt="Radio2" className="w-28 mb-3" />
                         <p className="text-lg leading-tight text-[#FFFFFF]/80 mb-3">
                         La evolución de la radio en Costa Rica. Música, cultura y comunidad que te inspiran.
                         </p>
@@ -31,9 +31,9 @@ const Footer = () => {
                                 REDES SOCIALES
                             </h5>
                             <ul className="space-y-3 text-sm text-[#FFFFFF]/60">
-                                <li><a href="https://www.instagram.com/noticiascolumbia/?hl=es" target="_blank" rel="noopener noreferrer" className="hover:text-[#DF4B54] transition-colors">Instagram</a></li>
-                                <li><a href="https://www.facebook.com/NoticiasColumbia/?locale2=pt_PT&_rdr" target="_blank" rel="noopener noreferrer" className="hover:text-[#DF4B54] transition-colors">Facebook</a></li>
-                                <li><a href="https://x.com/webcolumbia?lang=es" target="_blank" rel="noopener noreferrer" className="hover:text-[#DF4B54] transition-colors">Twitter (X)</a></li>
+                                <li><a href="https://www.instagram.com/radio2cr/?hl=es" target="_blank" rel="noopener noreferrer" className="hover:text-[#DF4B54] transition-colors">Instagram</a></li>
+                                <li><a href="https://www.facebook.com/radio2cr/?locale2=pt_PT&_rdr" target="_blank" rel="noopener noreferrer" className="hover:text-[#DF4B54] transition-colors">Facebook</a></li>
+                                <li><a href="https://x.com/radiodos?lang=es" target="_blank" rel="noopener noreferrer" className="hover:text-[#DF4B54] transition-colors">Twitter (X)</a></li>
                             </ul>
                         </div>
 

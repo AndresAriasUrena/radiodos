@@ -4,16 +4,17 @@ import { SearchProvider } from '@/lib/SearchContext'
 import { PlayerProvider } from '@/lib/PlayerContext'
 import RadioPlayer from '@/components/RadioPlayer'
 import Script from 'next/script'
+import SplashPage from '@/components/SplashPage'  
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Radio Columbia - Tu Estación de Radio Costarricense',
-  description: 'Radio Columbia - Tu estación de radio costarricense con las últimas noticias, deportes, música y entretenimiento. Escucha radio en vivo las 24 horas y mantente informado con las noticias de Costa Rica.',
-  keywords: 'radio columbia, radio costa rica, noticias costa rica, deportes costa rica, radio en vivo, streaming, entretenimiento, noticias costarricenses',
-  authors: [{ name: 'Radio Columbia' }],
-  creator: 'Radio Columbia',
-  publisher: 'Radio Columbia',
+  title: 'Radio2 - La Nueva Era de la Radio Digital en Costa Rica',
+  description: 'Radio2 - Experimenta la radio del futuro. Música, noticias, deportes y entretenimiento con una perspectiva moderna y dinámica. Transmisión digital 24/7 con la mejor calidad y programación innovadora.',
+  keywords: 'radio2, radio digital, streaming costa rica, radio online, noticias en vivo, radio moderna, radio interactiva, deportes en vivo, entretenimiento digital, radio streaming, radio 24/7',
+  authors: [{ name: 'Radio2' }],
+  creator: 'Radio2',
+  publisher: 'Radio2',
   formatDetection: {
     email: false,
     address: false,
@@ -24,16 +25,16 @@ export const metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: 'Radio Columbia - Tu Estación de Radio Costarricense',
-    description: 'Radio Columbia - Tu estación de radio costarricense con las últimas noticias, deportes, música y entretenimiento. Escucha radio en vivo las 24 horas.',
+    title: 'Radio2 - La Nueva Era de la Radio Digital en Costa Rica',
+    description: 'Experimenta la radio del futuro con Radio2. Música, noticias, deportes y entretenimiento con una perspectiva moderna y dinámica. Transmisión digital 24/7.',
     url: 'https://radiodev.aurigital.com',
-    siteName: 'Radio Columbia',
+    siteName: 'Radio2',
     images: [
       {
         url: '/opengraph-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Radio Columbia - Tu Estación de Radio Costarricense',
+        alt: 'Radio2 - La Nueva Era de la Radio Digital',
       },
     ],
     locale: 'es_CR',
@@ -41,9 +42,9 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Radio Columbia - Tu Estación de Radio Costarricense',
-    description: 'Radio Columbia - Tu estación de radio costarricense con las últimas noticias, deportes, música y entretenimiento.',
-    creator: '@webcolumbia',
+    title: 'Radio2 - La Nueva Era de la Radio Digital en Costa Rica',
+    description: 'Experimenta la radio del futuro. Música, noticias y entretenimiento con una perspectiva moderna y dinámica.',
+    creator: '@radiodos',
     images: ['/opengraph-image.jpg'],
   },
   robots: {
@@ -77,7 +78,7 @@ export default function RootLayout({ children }) {
     <html lang="es-CR" className="overflow-x-hidden">
       <head>
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-2T6Z9LG0JD"
+          src="https://www.googletagmanager.com/gtag/js?id=G-ZY4PPFPEJK"
           strategy="afterInteractive"
         />
         <Script id="gtag-init" strategy="afterInteractive">
@@ -85,7 +86,7 @@ export default function RootLayout({ children }) {
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-2T6Z9LG0JD');
+            gtag('config', 'G-ZY4PPFPEJK');
           `}
         </Script>
         <Script
@@ -96,15 +97,14 @@ export default function RootLayout({ children }) {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "RadioStation",
-            "name": "Radio Columbia",
-            "description": "Tu estación de radio costarricense con las últimas noticias, deportes, música y entretenimiento",
+            "name": "Radio2",
+            "description": "La nueva era de la radio digital en Costa Rica. Música, noticias y entretenimiento con una perspectiva moderna y dinámica.",
             "url": "https://radiodev.aurigital.com",
-            "logo": "https://radiodev.aurigital.com/assets/LogoColumbia.svg",
+            "logo": "https://radiodev.aurigital.com/assets/LogoRadio2.svg",
             "sameAs": [
-              "https://www.facebook.com/NoticiasColumbia/",
-              "https://www.instagram.com/noticiascolumbia/",
-              "https://www.youtube.com/channel/UCo2Fr8GUPmevyi7uih-0oTg",
-              "https://x.com/webcolumbia"
+              "https://www.facebook.com/Radio2cr/",
+              "https://www.instagram.com/radio2cr/",
+              "https://x.com/radiodos"
             ],
             "contactPoint": {
               "@type": "ContactPoint",
@@ -125,6 +125,7 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <SearchProvider>
           <PlayerProvider>
+            <SplashPage />
             {children}
             <RadioPlayer />
           </PlayerProvider>

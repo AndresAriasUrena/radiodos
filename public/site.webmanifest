@@ -1,7 +1,7 @@
 {
-  "name": "Radio Columbia",
-  "short_name": "Columbia",
-  "description": "Tu estación de radio costarricense con las últimas noticias, deportes, música y entretenimiento",
+  "name": "Radio2",
+  "short_name": "Radio2",
+  "description": "La nueva era de la radio digital en Costa Rica. Música, noticias y entretenimiento con una perspectiva moderna y dinámica.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F8FBFF",
@@ -9,7 +9,7 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/assets/LogoColumbia.svg",
+      "src": "/assets/LogoRadio2.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
@@ -25,7 +25,7 @@
       "type": "image/png"
     }
   ],
-  "categories": ["news", "music", "entertainment"],
+  "categories": ["news", "music", "entertainment", "digital media"],
   "lang": "es-CR",
   "dir": "ltr"
 } 
