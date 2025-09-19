@@ -1,0 +1,219 @@
+Los archivos de wp-content ya están migrados en el File Manage de radiodos.aurigital.com
+
+
+Guía Completa: Migración de Posts entre sitios WordPress
+Versión Mejorada - Basada en Experiencia Real
+FASE 1: PREPARACIÓN Y ANÁLISIS
+1.1 CRÍTICO: Verificar configuración de dominios cruzados
+Si tu frontend y backend están en dominios diferentes, configura CORS en el archivo .htaccess del servidor de imágenes. Sin esto, las imágenes no se mostrarán debido a restricciones de acceso entre dominios.
+1.2 Verificar que tienes archivos físicos de imágenes
+Una base de datos sin los archivos físicos resulta en imágenes rotas. Antes de migrar, confirma que tienes todas las imágenes descargadas localmente. Un sitio con 2,000 posts típicamente tiene 3,000+ imágenes asociadas.
+1.3 Identificar tipos de contenido
+Examina tu backup para encontrar exactamente qué tipos de posts contiene:
+'post' - Artículos reales del blog (MIGRAR)
+'attachment' - Imágenes subidas (MIGRAR)
+'elementor_library' - Elementos del constructor (NO MIGRAR)
+'revision' - Borradores automáticos (NO MIGRAR)
+'page' - Páginas estáticas (EVALUAR si necesitas)
+FASE 2: PREPARACIÓN DE DATOS SQL
+2.1 URLs absolutas obligatorias para dominios cruzados
+Si tu frontend está en un dominio diferente al backend, debes usar URLs absolutas siempre. Las URLs relativas como "/wp-content/uploads/" no funcionarán. Necesitas cambiar todas las referencias para que apunten a tu dominio de imágenes completo.
+2.2 Crear archivo de migración por partes
+No intentes migrar todo en un solo archivo gigante. Divide la migración en partes manejables:
+Estructura de tablas (si la necesitas)
+Posts y attachments principales
+Metadatos esenciales como thumbnails
+Categorías, tags y relaciones
+Esto facilita la depuración cuando algo sale mal.
+2.3 Convertir formato de INSERT a múltiples valores
+El formato más eficiente usa un solo INSERT con múltiples valores separados por comas, no múltiples INSERTs individuales. Esto acelera la importación significativamente.
+Estructura específica obligatoria:
+Una sola línea INSERT INTO al inicio de cada tabla
+Cada registro de datos termina con coma (,)
+Solo el último registro de cada tabla termina con punto y coma (;)
+Formato: INSERT INTO tabla VALUES (registro1), (registro2), (registro3);
+FASE 3: FILTRADO DE CONTENIDO MEJORADO
+3.1 Usar script Python en lugar de comandos bash
+Para archivos SQL grandes, los comandos bash pueden fallar o producir resultados incorrectos. Un script Python es más confiable para filtrar contenido y mantener la estructura SQL correcta.
+3.2 Elementos que SÍ debes migrar
+Tabla wp_posts:
+Registros con post_type = 'post' (artículos reales)
+Registros con post_type = 'attachment' (imágenes)
+Evitar todo lo que termine en 'elementor_library', 'revision', 'nav_menu_item'
+Tabla wp_postmeta:
+_thumbnail_id (imagen destacada de cada post) - CRÍTICO
+_wp_attached_file (ruta del archivo de imagen)
+Eliminar metadatos de plugins: elementor, yoast, tie_, oembed
+Tabla wp_terms, wp_term_taxonomy, wp_term_relationships:
+Solo categorías (taxonomy = 'category')
+Solo tags (taxonomy = 'post_tag')
+Solo relaciones de posts reales
+Tabla wp_users:
+Solo usuarios que son autores de posts migrados
+3.3 CRÍTICO: Thumbnails requieren atención especial
+Los thumbnails se pierden fácilmente durante la migración. Extrae todos los metadatos _thumbnail_id por separado y verifica que se importen correctamente. Sin thumbnails, los posts aparecen sin imagen destacada.
+FASE 4: ESTRUCTURA DEL ARCHIVO FINAL
+4.1 Formato correcto obligatorio
+Tu archivo final debe tener exactamente esta estructura para evitar errores de importación:
+Configuración inicial:
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+Datos por tabla:
+INSERT INTO wp_posts VALUES (registro1), (registro2), (registro3);
+INSERT INTO wp_postmeta VALUES (metadato1), (metadato2), (metadato3);
+INSERT INTO wp_terms VALUES (categoria1), (categoria2);
+INSERT INTO wp_term_taxonomy VALUES (taxonomia1), (taxonomia2);
+INSERT INTO wp_term_relationships VALUES (relacion1), (relacion2);
+INSERT INTO wp_users VALUES (usuario1), (usuario2);
+Configuración final:
+SET FOREIGN_KEY_CHECKS = 1;
+4.2 Reglas críticas de formato
+Un solo INSERT por tabla con todos los valores separados por comas
+Último registro de cada INSERT termina con punto y coma (;), no coma (,)
+NO incluir CREATE TABLE statements
+Todas las URLs de attachments deben ser absolutas al dominio final
+Ejemplo: https://radiodos.aurigital.com/wp-content/uploads/2022/01/imagen.jpg
+Ejemplo: https://columbiaestereo.aurigital.com/wp-content/uploads/2021/05/foto.jpg
+Mantener codificación UTF-8 para caracteres especiales
+FASE 5: IMPORTACIÓN Y SOLUCIÓN DE PROBLEMAS REALES
+5.1 Importación por partes recomendada
+En lugar de un archivo gigante que puede fallar, importa por etapas:
+Posts básicos primero
+Attachments por separado
+Thumbnails al final
+Verificar cada paso antes de continuar
+5.2 Verificaciones post-importación críticas
+Después de importar, verifica inmediatamente:
+Cantidad de posts importados coincide con lo esperado
+Thumbnails existen en la base de datos
+URLs de attachments son absolutas y accesibles
+Posts recientes tienen fechas correctas
+Autores de posts existen en wp_users
+5.3 Problemas comunes y sus causas
+Imágenes no se ven:
+URLs relativas en arquitectura de dominios separados
+Problema de CORS no configurado
+Archivos físicos no subidos al servidor
+Permisos incorrectos en carpeta uploads
+Thumbnails faltantes:
+Metadatos _thumbnail_id no migrados
+IDs de thumbnails apuntan a imágenes inexistentes
+Relación post-attachment rota
+Errores de importación:
+Archivo SQL con sintaxis incorrecta
+Mezcla de formatos de INSERT
+Archivo demasiado grande para el servidor
+Caracteres especiales mal codificados
+Posts con contenido corrupto:
+Código de Elementor malformado muy largo
+Datos binarios mezclados con texto
+Encoding incorrecto de caracteres especiales
+5.4 Regeneración de thumbnails automática
+Si los thumbnails se pierden, existe un método para regenerarlos automáticamente asignando la primera imagen de cada post como thumbnail. Esto resuelve la mayoría de casos donde la relación se rompió durante la migración.
+FASE 6: NUEVAS LECCIONES APRENDIDAS - PROBLEMAS ESPECÍFICOS Y SOLUCIONES
+6.1 Problema: Autores inexistentes
+Los posts migrados pueden referenciar autores que no existen en la nueva base de datos.
+Síntomas:
+Posts sin autor asignado
+Errores de referencia en post_author
+Solución completa:
+Identificar autores referenciados: SELECT DISTINCT post_author FROM wp_posts WHERE post_type = 'post'
+Comparar con autores existentes: SELECT ID FROM wp_users
+Extraer usuarios faltantes del archivo original: grep "INSERT INTO.*wp_users" archivo_original.sql
+Importar solo los usuarios necesarios como autores
+6.2 Problema: Categorías mal asignadas o faltantes
+Las categorías pueden estar presentes en wp_terms pero faltar las taxonomías o relaciones.
+Verificación sistemática:
+Contar categorías reales: SELECT COUNT(*) FROM wp_term_taxonomy WHERE taxonomy = 'category'
+Verificar posts sin categoría: Ver posts que no tienen relación en wp_term_relationships
+Importar estructura completa: wp_terms → wp_term_taxonomy → wp_term_relationships
+Categorías principales típicas a verificar:
+Noticias (mayor volumen de posts)
+Actualidad
+Entretenimiento
+Música/Arte (dependiendo del sitio)
+6.3 Problema crítico: Attachments existen pero URLs incorrectas
+La base de datos puede tener todos los attachments registrados pero con URLs del dominio anterior.
+Identificación:
+SELECT COUNT(*) FROM wp_posts WHERE post_type = 'attachment' AND guid NOT LIKE 'https://tu-dominio-final.com%';
+Corrección masiva de URLs:
+UPDATE wp_posts 
+SET guid = REPLACE(guid, 'https://dominio-anterior.com/wordpress/wp-content/uploads/', 'https://dominio-final.com/wp-content/uploads/')
+WHERE post_type = 'attachment';
+
+UPDATE wp_postmeta pm
+JOIN wp_posts p ON pm.post_id = p.ID
+SET pm.meta_value = REPLACE(pm.meta_value, 'dominio-anterior', 'dominio-final')
+WHERE p.post_type = 'attachment' AND pm.meta_key = '_wp_attachment_metadata';
+6.4 Problema: Entidades HTML mal codificadas en títulos
+Los títulos pueden contener “, ”, ’ etc. que se muestran como código.
+Detección:
+SELECT ID, post_title FROM wp_posts WHERE post_title LIKE '%&#%' LIMIT 10;
+Opciones de solución:
+Base de datos: Convertir entidades a caracteres reales con REPLACE
+Frontend: Decodificar con bibliotecas como 'he' en JavaScript
+WordPress: Usar wp_specialchars_decode() en templates
+6.5 Attachments faltantes vs registros faltantes
+Es crucial distinguir entre:
+Registros de attachment faltantes: No hay entrada en wp_posts (requiere importación)
+Archivos físicos faltantes: Registro existe pero archivo no está en servidor
+URLs incorrectas: Todo existe pero apunta a ubicación incorrecta
+Diagnóstico por pasos:
+Contar attachments esperados vs actuales
+Verificar URLs de attachments existentes
+Probar acceso directo a archivos de imagen
+Importar solo los registros realmente faltantes
+6.6 Limpieza de archivos SQL problemáticos
+Los archivos SQL exportados suelen tener caracteres que rompen la importación.
+Problemas frecuentes y soluciones:
+Saltos de línea literales (\n): Reemplazar con espacios usando Find & Replace
+Campos con más columnas: Filtrar registros con conteo de comas correcto
+Encoding mixto: Asegurar UTF-8 consistente en todo el archivo
+Sintaxis malformada: Verificar paréntesis y comas en estructura INSERT
+6.7 Verificación final: Estados de migración completa
+Al final de una migración exitosa deberías tener:
+Estadísticas objetivo:
+Posts con thumbnail asignado: >95% del total
+Posts sin categoría: <5% del total
+Attachments con URLs correctas: 100%
+Autores existentes para todos los posts: 100%
+Comandos de verificación final:
+-- Posts con thumbnail
+SELECT COUNT(*) FROM wp_posts p 
+JOIN wp_postmeta pm ON p.ID = pm.post_id 
+WHERE p.post_type = 'post' AND pm.meta_key = '_thumbnail_id';
+
+-- Posts sin categoría  
+SELECT COUNT(*) FROM wp_posts p 
+WHERE p.post_type = 'post' AND p.ID NOT IN (
+    SELECT object_id FROM wp_term_relationships tr
+    JOIN wp_term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+    WHERE tt.taxonomy = 'category'
+);
+
+-- URLs de attachments incorrectas
+SELECT COUNT(*) FROM wp_posts 
+WHERE post_type = 'attachment' 
+AND guid NOT LIKE 'https://tu-dominio-final.com%';
+CONSIDERACIONES CRÍTICAS ADICIONALES
+Backup de seguridad expandido
+Siempre crea respaldos completos por tabla antes de importar. Si algo sale mal, podrás restaurar fácilmente sin perder todo el trabajo.
+Checklist de verificación final
+URLs de imágenes funcionan al acceder directamente
+CORS configurado si usas dominios separados
+Thumbnails visibles en WordPress Admin
+Fechas de posts son correctas
+Autores existen y están asignados correctamente
+Categorías y tags aparecen en su lugar
+Entidades HTML se renderizan correctamente
+Optimización de rendimiento
+Importa durante horas de poco tráfico
+Usa configuraciones que aceleren la importación
+Comprime archivos SQL grandes antes de subir
+Monitorea recursos del servidor durante el proceso
+Gestión de expectativas
+Una migración completa puede tomar varias horas o días dependiendo del tamaño. Los problemas son normales y esperados. La clave es dividir el trabajo en partes manejables y verificar cada paso.
+Documentación del proceso
+Mantén un registro de todos los cambios realizados, problemas encontrados y soluciones aplicadas. Esto facilita futuras migraciones o correcciones necesarias.
+Esta metodología está basada en problemas reales encontrados y solucionados durante migraciones exitosas, incluyendo casos complejos con arquitecturas de dominios separados y problemas de encoding.
+
