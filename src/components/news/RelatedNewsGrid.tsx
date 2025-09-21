@@ -43,11 +43,11 @@ export default function RelatedNewsGrid({ posts }: RelatedNewsGridProps) {
                       <span className="text-[#D92A34] border-[1.4px] border-[#D92A34] px-4 py-[4px] rounded-full bg-transparent text-sm font-medium">
                         {category}
                       </span>
-                      <span className="text-xs font-medium text-[#FFFFFF]/40">
+                      <span className="text-xs font-medium text-[#FFFFFF]/40 text-left">
                         {formatDate(post.date)}
                       </span>
                     </div>
-                    <h3 className="text-base font-medium text-[#FFFFFF]/80 group-hover:text-[#D92A34] line-clamp-2 transition-colors">
+                    <h3 className="text-base font-medium text-[#FFFFFF]/80 group-hover:text-[#D92A34] line-clamp-2 transition-colors text-left">
                       {cleanTitle(post.title.rendered)}
                     </h3>
                   </div>

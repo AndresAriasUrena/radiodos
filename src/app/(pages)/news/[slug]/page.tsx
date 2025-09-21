@@ -134,7 +134,7 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
                                         <NewsSectionsSidebar html={htmlWithIds} />
                                     </div>
                                     <article
-                                        className="prose prose-invert mx-auto text-left"
+                                        className="prose prose-invert mx-auto text-left text-[#FFFFFF]/60"
                                         dangerouslySetInnerHTML={{ __html: htmlWithIds }}
                                     />
                                 </div>
