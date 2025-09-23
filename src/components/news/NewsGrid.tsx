@@ -30,6 +30,7 @@ export default function NewsGrid({ filters, onOpenFilters, title = 'Noticias', p
   const { searchTerm } = useContext(SearchContext);
   const initializedRef = useRef(false);
   const previousFiltersRef = useRef<string>('');
+  const previousSearchRef = useRef<string>('');
 
   const POSTS_PER_PAGE = 9;
   const INITIAL_LOAD = 9;
@@ -129,14 +130,17 @@ export default function NewsGrid({ filters, onOpenFilters, title = 'Noticias', p
 
     const serializedFilters = JSON.stringify(filters?.categories?.slice().sort() ?? []);
     const filtersChanged = previousFiltersRef.current !== serializedFilters;
+    const normalizedSearch = (searchTerm ?? '').trim();
+    const searchChanged = previousSearchRef.current !== normalizedSearch;
 
-    if (!initializedRef.current || filtersChanged) {
+    if (!initializedRef.current || filtersChanged || searchChanged) {
       previousFiltersRef.current = serializedFilters;
+      previousSearchRef.current = normalizedSearch;
       initializedRef.current = true;
       setPage(1);
       fetchPosts(1, false);
     }
-  }, [categoriesLoaded, fetchPosts, filters]);
+  }, [categoriesLoaded, fetchPosts, filters, searchTerm]);
 
   const handleRetry = () => {
     setError(null);

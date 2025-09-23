@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useContext, useCallback } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { IoClose } from 'react-icons/io5';
 import { SearchContext } from '@/lib/SearchContext';
@@ -23,6 +24,10 @@ const FilterSidebar = ({
   setIsMobileOpen = () => {}
 }: FilterSidebarProps) => {
   const { searchTerm, setSearchTerm } = useContext(SearchContext);
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const [selectedFilters, setSelectedFilters] = useState<FilterData>({
     categories: [...filters.categories]
@@ -77,6 +82,32 @@ const FilterSidebar = ({
     fetchCategories();
   }, [fetchCategories]);
 
+  const syncWithRouter = (nextFilters: FilterData, term: string) => {
+    const params = new URLSearchParams();
+
+    const trimmedTerm = term.trim();
+    if (trimmedTerm) {
+      params.set('search', trimmedTerm);
+    }
+
+    if (nextFilters.categories && nextFilters.categories.length > 0) {
+      params.set('categories', nextFilters.categories.join(','));
+    }
+
+    const queryString = params.toString();
+    const targetPath = '/news';
+    const targetUrl = queryString ? `${targetPath}?${queryString}` : targetPath;
+
+    if ((pathname ?? '').startsWith('/news')) {
+      router.replace(targetUrl, { scroll: false });
+    } else {
+      router.push(targetUrl);
+    }
+
+    onFilterChange?.(nextFilters);
+    setIsMobileOpen(false);
+  };
+
   const handleCheckboxChange = (category: keyof FilterData, value: string) => {
     setSelectedFilters(prev => {
       const currentValues = prev[category];
@@ -89,14 +120,14 @@ const FilterSidebar = ({
         [category]: newValues
       };
 
-      onFilterChange?.(updatedFilters);
+      syncWithRouter(updatedFilters, searchTerm);
       return updatedFilters;
     });
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    onFilterChange?.(selectedFilters);
+    syncWithRouter(selectedFilters, searchTerm);
   };
 
   return (

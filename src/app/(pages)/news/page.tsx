@@ -1,18 +1,29 @@
 // src/app/(pages)/news/page.tsx
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useMemo } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import FilterSidebar from '@/components/news/FilterSidebar';
 import NewsGrid from '@/components/news/NewsGrid';
 import { FilterData } from '@/types/wordpress';
 import { Search } from 'lucide-react';
+import { useSearch } from '@/lib/SearchContext';
 
 export const dynamic = 'force-dynamic';
 
 function NewsContent({ title }: { title: string }) {
-  const [filters, setFilters] = useState<FilterData>({ categories: [] });
+  const searchParams = useSearchParams();
+  const { setSearchTerm } = useSearch();
+
+  const initialFilters = useMemo(() => {
+    const categoriesParam = searchParams?.get('categories');
+    const categories = categoriesParam ? categoriesParam.split(',').filter(Boolean) : [];
+    return { categories } as FilterData;
+  }, [searchParams]);
+
+  const [filters, setFilters] = useState<FilterData>(initialFilters);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
   useEffect(() => {
@@ -29,27 +40,19 @@ function NewsContent({ title }: { title: string }) {
               meta.content = 'Descubre las últimas noticias y actualidad de Costa Rica en Radio2. Mantente informado con nuestras noticias de música, entretenimiento, política y más.';
       document.head.appendChild(meta);
     }
+  }, []);
 
-    if (filters.categories.length > 0) {
-    }
-  }, [filters]);
+  useEffect(() => {
+    const nextSearch = searchParams?.get('search') ?? '';
+    setSearchTerm(nextSearch);
+  }, [searchParams, setSearchTerm]);
+
+  useEffect(() => {
+    setFilters(initialFilters);
+  }, [initialFilters]);
 
   const handleFilterChange = (newFilters: FilterData) => {
-    setFilters(prev => {
-      const prevCategories = prev.categories ?? [];
-      const nextCategories = newFilters.categories ?? [];
-
-      if (
-        prevCategories.length === nextCategories.length &&
-        prevCategories.every((cat, index) => cat === nextCategories[index])
-      ) {
-        return prev;
-      }
-
-      return {
-        categories: [...nextCategories]
-      };
-    });
+    setFilters({ categories: [...(newFilters.categories ?? [])] });
   };
 
   return (
