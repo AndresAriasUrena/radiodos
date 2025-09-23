@@ -23,8 +23,8 @@ function HomeContent() {
             />
               <div className='w-full h-[2px] bg-[#141414]'/>
             <CategoryNewsGrid
-              title="Descubre"
-              tagSlug=""
+              title="Destacados"
+              tagSlug="destacados"
               showCategories={true}
             />
           </div>
