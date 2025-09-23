@@ -35,7 +35,21 @@ function NewsContent({ title }: { title: string }) {
   }, [filters]);
 
   const handleFilterChange = (newFilters: FilterData) => {
-    setFilters(newFilters);
+    setFilters(prev => {
+      const prevCategories = prev.categories ?? [];
+      const nextCategories = newFilters.categories ?? [];
+
+      if (
+        prevCategories.length === nextCategories.length &&
+        prevCategories.every((cat, index) => cat === nextCategories[index])
+      ) {
+        return prev;
+      }
+
+      return {
+        categories: [...nextCategories]
+      };
+    });
   };
 
   return (
@@ -62,6 +76,7 @@ function NewsContent({ title }: { title: string }) {
           {/* Sidebar desktop */}
           <div className="hidden lg:block">
             <FilterSidebar 
+              filters={filters}
               onFilterChange={handleFilterChange}
               isMobileOpen={false}
               setIsMobileOpen={() => {}}
@@ -81,6 +96,7 @@ function NewsContent({ title }: { title: string }) {
         }`}>
           <div className="-my-5 h-full overflow-y-auto">
             <FilterSidebar 
+              filters={filters}
               onFilterChange={handleFilterChange}
               isMobileOpen={isMobileFiltersOpen}
               setIsMobileOpen={setIsMobileFiltersOpen}

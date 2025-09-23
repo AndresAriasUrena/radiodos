@@ -1,11 +1,10 @@
 // src/components/news/NewsGrid.tsx
 'use client';
 
-import { useState, useEffect, useContext, useCallback } from 'react';
+import { useState, useEffect, useContext, useCallback, useRef } from 'react';
 import NewsCard from '../UI/NewsCard';
 import { IoFilter } from 'react-icons/io5';
 import { SearchContext } from '@/lib/SearchContext';
-import { useRouter, useSearchParams } from 'next/navigation';
 import WordPressService from '@/lib/wordpressService';
 import { WordPressPost, FilterData, WordPressCategory } from '@/types/wordpress';
 
@@ -29,8 +28,8 @@ export default function NewsGrid({ filters, onOpenFilters, title = 'Noticias', p
   const [allCategories, setAllCategories] = useState<WordPressCategory[]>([]);
   const [categoriesLoaded, setCategoriesLoaded] = useState(false);
   const { searchTerm } = useContext(SearchContext);
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const initializedRef = useRef(false);
+  const previousFiltersRef = useRef<string>('');
 
   const POSTS_PER_PAGE = 9;
   const INITIAL_LOAD = 9;
@@ -126,11 +125,18 @@ export default function NewsGrid({ filters, onOpenFilters, title = 'Noticias', p
   }, [sortBy, filters, searchTerm, categoriesMap, parentSlugs, categorySlugToParentId, allCategories]);
 
   useEffect(() => {
-    if (categoriesLoaded) {
-      setPage(1); 
+    if (!categoriesLoaded) return;
+
+    const serializedFilters = JSON.stringify(filters?.categories?.slice().sort() ?? []);
+    const filtersChanged = previousFiltersRef.current !== serializedFilters;
+
+    if (!initializedRef.current || filtersChanged) {
+      previousFiltersRef.current = serializedFilters;
+      initializedRef.current = true;
+      setPage(1);
       fetchPosts(1, false);
     }
-  }, [categoriesLoaded, fetchPosts]);
+  }, [categoriesLoaded, fetchPosts, filters]);
 
   const handleRetry = () => {
     setError(null);

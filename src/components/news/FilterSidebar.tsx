@@ -1,26 +1,31 @@
 'use client';
 
-import { useState, useEffect, useContext } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Facebook, Instagram, X, Search } from 'lucide-react';
+import { useState, useEffect, useContext, useCallback } from 'react';
+import { Search } from 'lucide-react';
 import { IoClose } from 'react-icons/io5';
 import { SearchContext } from '@/lib/SearchContext';
 import WordPressService from '@/lib/wordpressService';
 import { WordPressCategory, FilterItem, FilterData } from '@/types/wordpress';
 
 interface FilterSidebarProps {
+  filters?: FilterData;
   onFilterChange?: (filters: FilterData) => void;
   isMobileOpen?: boolean;
   setIsMobileOpen?: (open: boolean) => void;
 }
 
-const FilterSidebar = ({ onFilterChange, isMobileOpen = false, setIsMobileOpen = () => { } }: FilterSidebarProps) => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+const defaultFilters: FilterData = { categories: [] };
+
+const FilterSidebar = ({
+  filters = defaultFilters,
+  onFilterChange,
+  isMobileOpen = false,
+  setIsMobileOpen = () => {}
+}: FilterSidebarProps) => {
   const { searchTerm, setSearchTerm } = useContext(SearchContext);
 
   const [selectedFilters, setSelectedFilters] = useState<FilterData>({
-    categories: []
+    categories: [...filters.categories]
   });
 
   const [availableFilters, setAvailableFilters] = useState({
@@ -29,62 +34,48 @@ const FilterSidebar = ({ onFilterChange, isMobileOpen = false, setIsMobileOpen =
 
   const [loading, setLoading] = useState(true);
 
-  const updateURL = (filters: FilterData) => {
-    const params = new URLSearchParams();
-    if (filters.categories.length > 0) {
-      params.set('categories', filters.categories.join(','));
-    }
-    const newURL = params.toString() ? `/news?${params.toString()}` : '/news';
-
-    if (typeof window !== 'undefined') {
-      if (window.location.pathname === '/news') {
-        router.replace(newURL, { scroll: false });
-      } else {
-        router.push(newURL);
-      }
-    }
-  };
-
-  const loadFiltersFromURL = () => {
-    const categories = searchParams.get('categories')?.split(',').filter(Boolean) || [];
-    return { categories };
-  };
-
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        setLoading(true);
-        
-        const { categories } = await WordPressService.getCategories();
+    setSelectedFilters(prev => {
+      const nextCategories = [...(filters?.categories ?? [])];
+      const sameLength = prev.categories.length === nextCategories.length;
+      const sameValues = sameLength && prev.categories.every((cat, index) => cat === nextCategories[index]);
 
-        setAvailableFilters({
-          categories: categories
-            .map((cat: WordPressCategory) => ({
-              label: cat.name,
-              count: cat.count,
-              slug: cat.slug
-            }))
-            .sort((a: FilterItem, b: FilterItem) => b.count - a.count) 
-        });
-
-        const urlFilters = loadFiltersFromURL();
-        setSelectedFilters(urlFilters);
-
-        setLoading(false);
-      } catch (error) {
-        console.error('❌ Error fetching WordPress categories:', error);
-        setLoading(false);
+      if (sameValues) {
+        return prev;
       }
-    };
 
-    fetchCategories();
+      return {
+        categories: nextCategories
+      };
+    });
+  }, [filters]);
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      const { categories } = await WordPressService.getCategories();
+
+      setAvailableFilters({
+        categories: categories
+          .map((cat: WordPressCategory) => ({
+            label: cat.name,
+            count: cat.count,
+            slug: cat.slug
+          }))
+          .sort((a: FilterItem, b: FilterItem) => b.count - a.count)
+      });
+
+      setLoading(false);
+    } catch (error) {
+      console.error('❌ Error fetching WordPress categories:', error);
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
-    if (!loading) {
-      onFilterChange?.(selectedFilters);
-    }
-  }, [selectedFilters]);
+    fetchCategories();
+  }, [fetchCategories]);
 
   const handleCheckboxChange = (category: keyof FilterData, value: string) => {
     setSelectedFilters(prev => {
@@ -93,18 +84,19 @@ const FilterSidebar = ({ onFilterChange, isMobileOpen = false, setIsMobileOpen =
         ? currentValues.filter(v => v !== value)
         : [...currentValues, value];
 
-      const newFilters = {
+      const updatedFilters: FilterData = {
         ...prev,
         [category]: newValues
       };
-      updateURL(newFilters);
-      return newFilters;
+
+      onFilterChange?.(updatedFilters);
+      return updatedFilters;
     });
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    updateURL(selectedFilters);
+    onFilterChange?.(selectedFilters);
   };
 
   return (
