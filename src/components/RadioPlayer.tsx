@@ -203,7 +203,7 @@ const RadioPlayer = () => {
     playerState.currentIndex > 0;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-[#000000] border-t-[2px] border-t-[#141414] text-[#C7C7C7] z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-[#D92A34] text-white z-50">
       <audio
         ref={audioRef}
         preload="none"
@@ -225,7 +225,7 @@ const RadioPlayer = () => {
       />
       
       {playerState.type === 'podcast' && (
-        <div className="w-full h-2 bg-white/30 rounded-full cursor-pointer">
+        <div className="w-full h-2 bg-[#444444] rounded-full cursor-pointer">
           <div 
             ref={progressBarRef}
             className="relative h-full group"
@@ -247,10 +247,10 @@ const RadioPlayer = () => {
           <div className="flex items-center space-x-3">
             {playerState.type === 'radio' ? (
               <>
-                <Radio className="w-5 h-5 text-[#D51F2F]" />
+                <Radio className="w-5 h-5 text-white" />
                 <div className="min-w-0">
                   <p className="font-medium text-sm truncate">Radio en Vivo</p>
-                  <p className="text-xs text-gray-400 truncate">
+                  <p className="text-xs text-white truncate">
                     {playerState.isPlaying ? 'Transmisión en directo' : 'Pausado'}
                   </p>
                 </div>
@@ -266,7 +266,7 @@ const RadioPlayer = () => {
                 />
                 <div className="min-w-0 hidden lg:block max-w-[300px]">
                   <p className="font-medium text-sm lg:text-base truncate">{cleanHtml(playerState.currentEpisode.title)}</p>
-                  <p className="text-xs text-gray-400 truncate">{cleanHtml(playerState.currentShow.title)}</p>
+                  <p className="text-xs text-white truncate">{cleanHtml(playerState.currentShow.title)}</p>
                 </div>
               </>
             ) : null}
@@ -274,7 +274,7 @@ const RadioPlayer = () => {
         </div>
 
         {playerState.type === 'podcast' && (
-          <div className="text-xs text-gray-400 mx-4">
+          <div className="text-xs text-white mx-4">
             {formatTime(currentTime)} / {formatTime(duration)}
           </div>
         )}
@@ -285,8 +285,8 @@ const RadioPlayer = () => {
             disabled={!canGoNext}
             className={`p-2 rounded-full transition-colors ${
               canGoNext 
-                ? 'hover:bg-gray-700 hover:text-[#D51F2F]' 
-                : 'text-gray-500 cursor-not-allowed'
+                ? 'hover:bg-white/80 hover:text-[#D92A34]' 
+                : 'text-white/50 cursor-not-allowed'
             }`}
             title={playerState.type === 'radio' ? 'No disponible para radio en vivo' : 'Episodio anterior'}
           >
@@ -313,8 +313,8 @@ const RadioPlayer = () => {
             disabled={!canGoPrevious}
             className={`p-2 rounded-full transition-colors ${
               canGoPrevious 
-                ? 'hover:bg-gray-700 hover:text-[#D51F2F]' 
-                : 'text-gray-500 cursor-not-allowed'
+                ? 'hover:bg-white/80 hover:text-[#D92A34]' 
+                : 'text-white/50 cursor-not-allowed'
             }`}
             title={playerState.type === 'radio' ? 'No disponible para radio en vivo' : 'Siguiente episodio'}
           >
@@ -325,7 +325,7 @@ const RadioPlayer = () => {
         <div className="hidden lg:flex items-center space-x-3 min-w-0 flex-1 justify-end">
           <button
             onClick={toggleMute}
-            className="p-2 rounded-full hover:bg-gray-700 transition-colors"
+            className="p-2 rounded-full hover:bg-white/80 transition-colors"
             title={isMuted ? 'Activar sonido' : 'Silenciar'}
           >
             {isMuted || volume === 0 ? (

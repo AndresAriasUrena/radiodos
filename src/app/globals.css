@@ -34,7 +34,7 @@ p {
   appearance: none;
   width: 14px;
   height: 14px;
-  background: #D51F2F;
+  background: #ffffff;
   border-radius: 50%;
   cursor: pointer;
   margin-top: -4px;
@@ -43,7 +43,7 @@ p {
 .radio-volume-slider::-moz-range-thumb {
   width: 14px;
   height: 14px;
-  background: #D51F2F;
+  background: #ffffff;
   border-radius: 50%;
   cursor: pointer;
   border: none;
@@ -56,7 +56,7 @@ p {
 .radio-volume-slider::-webkit-slider-runnable-track {
   height: 6px;
   border-radius: 4px;
-  background: linear-gradient(90deg, #D51F2F var(--progress, 70%), #6E6E6E var(--progress, 70%));
+  background: linear-gradient(90deg, #ffffff var(--progress, 70%), #444444 var(--progress, 70%));
 }
 .radio-volume-slider::-moz-range-track {
   height: 6px;
@@ -64,7 +64,7 @@ p {
   background: #4b5563;
 }
 .radio-volume-slider::-ms-fill-lower {
-  background: #D51F2F;
+  background: #ffffff;
   border-radius: 4px;
 }
 .radio-volume-slider::-ms-fill-upper {
@@ -72,7 +72,7 @@ p {
   border-radius: 4px;
 }
 .radio-volume-slider::-moz-range-progress {
-  background-color: #D51F2F;
+  background-color: #ffffff;
   height: 6px;
   border-radius: 4px;
 }
@@ -207,8 +207,8 @@ p {
 .radio-progress-bar {
   background: linear-gradient(
     to right,
-    #D51F2F 0%,
-    #D51F2F var(--progress),
+    #ffffff 0%,
+    #ffffff var(--progress),
     transparent var(--progress)
   );
   transition: none;
