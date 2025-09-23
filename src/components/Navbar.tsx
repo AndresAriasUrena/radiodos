@@ -35,9 +35,9 @@ export default function Navbar() {
   const menuItems: MenuItem[] = [
     { key: 'inicio', href: '/' },
     { key: 'Quienes somos', href: '/about-us' },
-    { key: 'Escúchenos', href: '#', isButton: true },
     { key: 'Noticias', href: '/news' },
     { key: 'Contacto', href: '/contact' },
+    { key: 'En vivo', href: '#', isButton: true },
   ];
 
   const toggleMenu = () => {
@@ -91,8 +91,9 @@ export default function Navbar() {
                   <button
                     key={item.key}
                     onClick={handleEnVivoClick}
-                    className="text-[#FFFFFF]/60 hover:text-[#D92A34] transition-colors flex items-center font-medium font-archivo"
+                    className="text-[#D92A34] hover:text-[#D92A34]/80 transition-colors flex items-center font-medium font-archivo"
                   >
+                    <span className="w-2 h-2 bg-[#D92A34] rounded-full mr-2 animate-pulse"></span>
                     {item.key.charAt(0).toUpperCase() + item.key.slice(1).replace('-', ' ')}
                   </button>
                 );
@@ -223,9 +224,9 @@ export default function Navbar() {
                     <button
                       key={item.key}
                       onClick={handleEnVivoClick}
-                      className="flex items-center px-6 py-3 text-lg transition-colors text-[#FFFFFF]/60 hover:text-[#D92A34] font-medium font-archivo w-full text-left"
+                      className="flex items-center px-6 py-3 text-lg transition-colors text-[#D92A34] hover:text-[#D92A34]/80 font-medium font-archivo w-full text-left"
                     >
-                      <IoRadio className="w-5 h-5 mr-2" />
+                      <span className="w-3 h-3 bg-[#D92A34] rounded-full mr-3 animate-pulse"></span>
                       {item.key.charAt(0).toUpperCase() + item.key.slice(1).replace('-', ' ')}
                     </button>
                   );
