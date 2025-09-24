@@ -193,7 +193,7 @@ class WordPressMigrator:
             print(f"📁 Creado: {filename} ({len(chunk)} registros)")
     
     def extract_terms_and_taxonomies(self):
-        """Extrae términos, taxonomías y relaciones"""
+        """Extrae términos, taxonomías y relaciones - TODAS las categorías por post"""
         print("\n🔍 Procesando términos y taxonomías...")
         
         # Extraer cada tabla
@@ -203,21 +203,41 @@ class WordPressMigrator:
         
         # Filtrar solo categorías y tags
         valid_taxonomies = []
+        valid_taxonomy_ids = set()
+        
         for line in taxonomies:
             if "'category'" in line or "'post_tag'" in line:
                 valid_taxonomies.append(line)
+                # Extraer el term_taxonomy_id para filtrar relaciones
+                import re
+                match = re.search(r'^\((\d+),', line.strip())
+                if match:
+                    valid_taxonomy_ids.add(match.group(1))
+        
+        # FILTRAR relaciones - SOLO las que corresponden a categorías/tags válidas
+        valid_relationships = []
+        for line in relationships:
+            # Formato: (object_id, term_taxonomy_id, term_order)
+            import re
+            match = re.search(r'^\(\d+,(\d+),', line.strip())
+            if match:
+                taxonomy_id = match.group(1)
+                if taxonomy_id in valid_taxonomy_ids:
+                    valid_relationships.append(line)
         
         self.stats['terms'] = len(terms)
         self.stats['taxonomies'] = len(valid_taxonomies)
-        self.stats['relationships'] = len(relationships)
+        self.stats['relationships'] = len(valid_relationships)
+        
+        print(f"🔍 Relaciones filtradas: {len(relationships)} → {len(valid_relationships)}")
         
         # Guardar archivos
         if terms:
             self.save_sql_file("04_Terms_Categories", "terms_migration.sql", terms, "wp_terms")
         if valid_taxonomies:
             self.save_sql_file("04_Terms_Categories", "term_taxonomy_migration.sql", valid_taxonomies, "wp_term_taxonomy")
-        if relationships:
-            self.save_sql_file("04_Terms_Categories", "term_relationships_migration.sql", relationships, "wp_term_relationships")
+        if valid_relationships:
+            self.save_sql_file("04_Terms_Categories", "term_relationships_migration.sql", valid_relationships, "wp_term_relationships")
         
         print(f"✅ Terms: {self.stats['terms']}, Taxonomies: {self.stats['taxonomies']}, Relationships: {self.stats['relationships']}")
     
@@ -617,7 +637,20 @@ Fecha: {timestamp}
         return True
 
 def main():
-    sql_file_path = "./SQL BACKUP_dC2QX.sql"
+    # Buscar archivo SQL automáticamente
+    import glob
+    sql_files = glob.glob("**/*BACKUP*.sql", recursive=True) + glob.glob("**/*backup*.sql", recursive=True)
+    
+    if not sql_files:
+        print("❌ No se encontró archivo SQL de backup")
+        print("📁 Archivos .sql encontrados:")
+        all_sql = glob.glob("**/*.sql", recursive=True)
+        for sql in all_sql[:10]:
+            print(f"   {sql}")
+        return
+    
+    sql_file_path = sql_files[0]
+    print(f"📁 Usando archivo: {sql_file_path}")
     output_dir = "."
     
     migrator = WordPressMigrator(sql_file_path, output_dir)
