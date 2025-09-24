@@ -94,10 +94,10 @@ function NewsContent({ title }: { title: string }) {
           onClick={() => setIsMobileFiltersOpen(false)}
         />
         
-        <div className={`fixed right-0 top-0 h-full w-80 bg-[#1E305F] z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${
+        <div className={`fixed right-0 top-0 h-full w-80 bg-[#000000] z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${
           isMobileFiltersOpen ? 'translate-x-0' : 'translate-x-full'
         }`}>
-          <div className="-my-5 h-full overflow-y-auto">
+          <div className="my-5 px-4 h-full overflow-y-auto">
             <FilterSidebar 
               filters={filters}
               onFilterChange={handleFilterChange}
