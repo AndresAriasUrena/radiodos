@@ -82,7 +82,7 @@ export default function Navbar() {
       <nav className="w-full">
         <div className="max-w-7xl mx-auto flex items-center justify-between py-4 px-6 sm:px-8">
           <div className="flex items-center gap-4">
-            <img src="/assets/LogoRadio2.svg" alt="Radio 2" className='mr-5 h-20 w-18'/>
+            <Link href="/"> <img src="/assets/LogoRadio2.svg" alt="Radio 2" className='mr-5 h-20 w-18'/></Link>
 
           <div className="hidden lg:flex items-center space-x-6">
             {menuItems.map((item) => {
@@ -181,7 +181,9 @@ export default function Navbar() {
         <div className="flex flex-col h-full">
           <div className="p-6 border-b border-[#141414]">
             <div className="flex items-center justify-between">
+              <Link href="/">
               <img src="/assets/LogoRadio2.svg" alt="Radio 2" className="h-20 w-18" />
+              </Link>
               <button
                 onClick={closeMenu}
                 className="text-[#FFFFFF]/60 hover:text-[#D92A34] transition-colors p-2"

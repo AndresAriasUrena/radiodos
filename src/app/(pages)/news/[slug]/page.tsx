@@ -103,7 +103,7 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
             <div className="min-h-screen font-jost">
                 <Navbar />
                 <div className="w-full">
-                    <div className="max-w-7xl mx-auto relative my-4 px-4 sm:px-8 py-8 w-full">
+                    <div className="max-w-7xl mx-auto relative px-4 sm:px-8 py-8 w-full">
                         <div className="flex flex-col lg:flex-row gap-6 w-full">
                             <aside className="order-1 lg:order-2 w-full lg:w-72 flex flex-col gap-8">
                                 <div className="hidden lg:block">

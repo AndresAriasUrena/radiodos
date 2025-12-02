@@ -9,7 +9,10 @@ const Hero = () => {
     <section className="flex flex-col items-center justify-center bg-[#000000] border-t border-b border-[#141414]">
       <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between">
         <div className="w-full lg:w-[60%] flex flex-col items-center lg:items-start text-center lg:text-left mb-8 lg:mb-0 px-4 sm:px-8 py-8">
-          <div className="w-full h-[280px] sm:h-[340px] lg:h-[440px] bg-[#FFFFFF]/5 rounded-xl mb-6 lg:mb-0"></div>
+          <div
+            style={{ backgroundImage: "url('/assets/about-us/about-us-hero1.png')" }}
+            className="w-full h-[280px] sm:h-[340px] lg:h-[440px] bg-cover bg-center rounded-xl mb-6 lg:mb-0"
+          ></div>
         </div>
 
         <div className="w-full lg:w-[40%] flex flex-col items-center lg:items-start text-center lg:text-left mb-8 lg:mb-0 px-4 sm:px-8 py-8">
@@ -64,7 +67,10 @@ const Hero = () => {
         </div>
 
         <div className="w-full lg:w-[60%] flex flex-col items-center lg:items-start text-center lg:text-left mb-8 lg:mb-0 px-4 sm:px-8 py-8 order-1 lg:order-2">
-          <div className="w-full h-[280px] sm:h-[340px] lg:h-[440px] bg-[#FFFFFF]/5 rounded-xl mb-6 lg:mb-0"></div>
+          <div
+            style={{ backgroundImage: "url('/assets/about-us/about-us-hero2.png')" }}
+            className="w-full h-[280px] sm:h-[340px] lg:h-[440px] bg-cover bg-center rounded-xl mb-6 lg:mb-0"
+          ></div>
         </div>
       </div>
     </section>
