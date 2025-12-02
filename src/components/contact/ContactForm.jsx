@@ -28,8 +28,8 @@ const ContactForm = () => {
 
     try {
       await emailjs.sendForm(
-        'template_xncpj4k',
         'service_ba3ue64',
+        'template_xncpj4k',
         formRef.current,
         'MFxAFrK4GqfW_l4gZ'
       );
