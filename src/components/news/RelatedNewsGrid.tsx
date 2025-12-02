@@ -23,12 +23,18 @@ export default function RelatedNewsGrid({ posts }: RelatedNewsGridProps) {
         </div>
         <div className="h-0.5 w-full bg-[#D92A34] mb-6" />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {posts.map((post) => {
+          {posts.map((post, index) => {
             const featuredImage = WordPressService.getFeaturedImage(post);
             const category = WordPressService.getCategory(post);
             return (
               <Link href={`/news/${post.slug}`} key={post.id}>
-                <article className="group overflow-hidden hover:scale-[1.02] transition-all duration-300">
+                <article
+                  className="group overflow-hidden hover:scale-[1.02] transition-all duration-500 opacity-0 animate-fadeInUp"
+                  style={{
+                    animationDelay: `${Math.min(index * 75, 150)}ms`,
+                    animationFillMode: 'forwards'
+                  }}
+                >
                   <div className="relative aspect-[16/11] bg-[#FFFFFF]/5 rounded-sm mb-4">
                     <Image
                       src={featuredImage}
@@ -36,6 +42,10 @@ export default function RelatedNewsGrid({ posts }: RelatedNewsGridProps) {
                       fill
                       className="object-cover rounded-sm"
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      loading="lazy"
+                      placeholder="blur"
+                      blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
+                      quality={75}
                     />
                   </div>
                   <div className="space-y-3">

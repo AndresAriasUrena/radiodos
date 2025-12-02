@@ -3,14 +3,17 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { WordPressPost } from '@/types/wordpress';
+import { memo } from 'react';
 
 interface NewsCardProps {
   post: WordPressPost;
+  priority?: boolean;
+  index?: number;
 }
 
 import WordPressService from '@/lib/wordpressService';
 
-export default function NewsCard({ post }: NewsCardProps) {
+function NewsCard({ post, priority = false, index = 0 }: NewsCardProps) {
   const featuredImage = WordPressService.getFeaturedImage(post);
   const category = WordPressService.getCategory(post);
   const formatDate = WordPressService.formatDate;
@@ -18,7 +21,13 @@ export default function NewsCard({ post }: NewsCardProps) {
 
   return (
     <Link href={`/news/${post.slug}`}>
-      <article className="group overflow-hidden hover:scale-[1.02] transition-all duration-700">
+      <article
+        className="group overflow-hidden hover:scale-[1.02] transition-all duration-500 opacity-0 animate-fadeInUp"
+        style={{
+          animationDelay: `${Math.min(index * 75, 400)}ms`,
+          animationFillMode: 'forwards'
+        }}
+      >
         <div className="relative aspect-[16/11] bg-[#FFFFFF]/5 rounded-sm">
           <Image
             src={featuredImage}
@@ -26,6 +35,11 @@ export default function NewsCard({ post }: NewsCardProps) {
             fill
             className="object-cover rounded-2xl"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            loading={priority ? "eager" : "lazy"}
+            priority={priority}
+            placeholder="blur"
+            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
+            quality={75}
           />
         </div>
 
@@ -48,3 +62,5 @@ export default function NewsCard({ post }: NewsCardProps) {
     </Link>
   );
 }
+
+export default memo(NewsCard);
