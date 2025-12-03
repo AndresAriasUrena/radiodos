@@ -42,10 +42,9 @@ const Hero = () => {
       try {
         setLoading(true);
         const shows = await RSSService.getAllPodcasts();
-        const ordered = shows.sort((a, b) => cleanHtml(a.title).localeCompare(cleanHtml(b.title)));
-        setPodcasts(ordered);
-        if (ordered.length > 0) {
-          setSelected(ordered[0]);
+        setPodcasts(shows);
+        if (shows.length > 0) {
+          setSelected(shows[0]);
         }
       } catch (e) {
         setPodcasts([]);
@@ -215,7 +214,7 @@ const Hero = () => {
       <div className="h-full flex flex-col lg:flex-row">
 
         {/* Sidebar izquierda: Podcasts - Desktop */}
-        <aside className="hidden lg:block w-[20%] h-[82vh] order-1">
+        <aside className="hidden lg:block w-[20%] h-[82vh] order-1 relative">
           <div className="h-full flex flex-col">
             <div className="flex-1 overflow-y-auto scrollbar-hide">
               {podcasts.map((p) => {
@@ -250,6 +249,17 @@ const Hero = () => {
               })}
             </div>
           </div>
+
+          {/* Scroll indicator */}
+          {podcasts.length > 4 && (
+            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none flex items-end justify-center pb-2">
+              <div className="animate-bounce">
+                <svg className="w-6 h-6 text-[#D51F2F]" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                  <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </div>
+            </div>
+          )}
         </aside>
 
         {/* Mobile Podcasts Sidebar */}
@@ -375,13 +385,17 @@ const Hero = () => {
         </main>
 
         {/* Sidebar derecha: Episodios del seleccionado - Desktop */}
-        <aside className="hidden lg:block w-[15%] h-[82vh] order-3">
+        <aside className="hidden lg:block w-[15%] h-[82vh] order-3 relative">
           <div className="h-full flex flex-col">
             {episodesLoading ? (
               <div className="flex-1 overflow-y-auto scrollbar-hide">
                 {Array.from({ length: 7 }).map((_, i) => (
                   <div key={i} className="p-3 rounded-xl bg-[#141414] animate-pulse h-16 border border-[#D51F2F]/20 mb-2" />
                 ))}
+              </div>
+            ) : episodes.length === 0 ? (
+              <div className="flex-1 flex items-center justify-center p-6">
+                <p className="text-white/40 text-center text-sm">Episodios no disponibles</p>
               </div>
             ) : (
               <div className="flex-1 overflow-y-auto scrollbar-hide">
@@ -407,6 +421,17 @@ const Hero = () => {
               </div>
             )}
           </div>
+
+          {/* Scroll indicator for episodes */}
+          {!episodesLoading && episodes.length > 7 && (
+            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none flex items-end justify-center pb-2">
+              <div className="animate-bounce">
+                <svg className="w-6 h-6 text-[#D51F2F]" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                  <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </div>
+            </div>
+          )}
         </aside>
 
         {/* Mobile Episodes Sidebar */}
@@ -426,17 +451,19 @@ const Hero = () => {
             </div>
             
             {/* Contador de episodios */}
-            <div className="px-4 py-2 border-b border-[#141414]">
-              <p className="text-white/60 text-sm">
-                {episodes.length > 0 ? (
-                  <>
-                    Mostrando {((episodePage - 1) * EPISODES_PER_PAGE) + 1} - {Math.min(episodePage * EPISODES_PER_PAGE, episodes.length)} de {episodes.length} episodios
-                  </>
-                ) : (
-                  "No hay episodios disponibles"
-                )}
-              </p>
-            </div>
+            {!episodesLoading && (
+              <div className="px-4 py-2 border-b border-[#141414]">
+                <p className="text-white/60 text-sm">
+                  {episodes.length > 0 ? (
+                    <>
+                      Mostrando {((episodePage - 1) * EPISODES_PER_PAGE) + 1} - {Math.min(episodePage * EPISODES_PER_PAGE, episodes.length)} de {episodes.length} episodios
+                    </>
+                  ) : (
+                    "No hay episodios disponibles"
+                  )}
+                </p>
+              </div>
+            )}
 
             <div className="flex-1 overflow-y-auto scrollbar-hide">
               {episodesLoading ? (
@@ -444,6 +471,10 @@ const Hero = () => {
                   {Array.from({ length: 5 }).map((_, i) => (
                     <div key={i} className="h-16 bg-[#141414] rounded-lg animate-pulse border border-[#D51F2F]/20" />
                   ))}
+                </div>
+              ) : episodes.length === 0 ? (
+                <div className="flex items-center justify-center p-8">
+                  <p className="text-white/40 text-center">Episodios no disponibles</p>
                 </div>
               ) : (
                 getPaginatedEpisodes().map((ep, index) => {

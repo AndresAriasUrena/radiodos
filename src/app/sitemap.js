@@ -1,7 +1,7 @@
 import WordPressService from '@/lib/wordpressService';
 
 export default async function sitemap() {
-  const baseUrl = 'https://radiodev.aurigital.com';
+  const baseUrl = 'https://radiodos.com';
   
   const staticPages = [
     {

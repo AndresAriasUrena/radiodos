@@ -1,6 +1,6 @@
 const siteConfig = {
   siteName: 'Radio2',
-  siteUrl: 'https://radiodev.aurigital.com/',
+  siteUrl: 'https://radiodos.com/',
   description: 'Radio2 - La nueva era de la radio digital en Costa Rica. Disfruta de música, noticias, deportes y entretenimiento con una experiencia moderna y dinámica. Transmitiendo 24/7 con la mejor calidad y programación innovadora.',
   keywords: 'radio2, radio digital costa rica, radio online, streaming de música, noticias en vivo, radio moderna, radio interactiva, deportes en vivo, entretenimiento digital, radio streaming, radio 24/7, radio costarricense',
   author: 'Radio2',

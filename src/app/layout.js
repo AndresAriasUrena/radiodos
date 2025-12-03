@@ -20,14 +20,14 @@ export const metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://radiodev.aurigital.com'),
+  metadataBase: new URL('https://radiodos.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     title: 'Radio2 - La Nueva Era de la Radio Digital en Costa Rica',
     description: 'Experimenta la radio del futuro con Radio2. Música, noticias, deportes y entretenimiento con una perspectiva moderna y dinámica. Transmisión digital 24/7.',
-    url: 'https://radiodev.aurigital.com',
+    url: 'https://radiodos.com',
     siteName: 'Radio2',
     images: [
       {
@@ -99,8 +99,8 @@ export default function RootLayout({ children }) {
             "@type": "RadioStation",
             "name": "Radio2",
             "description": "La nueva era de la radio digital en Costa Rica. Música, noticias y entretenimiento con una perspectiva moderna y dinámica.",
-            "url": "https://radiodev.aurigital.com",
-            "logo": "https://radiodev.aurigital.com/assets/LogoRadio2.svg",
+            "url": "https://radiodos.com",
+            "logo": "https://radiodos.com/assets/LogoRadio2.svg",
             "sameAs": [
               "https://www.facebook.com/Radio2cr/",
               "https://www.instagram.com/radio2cr/",

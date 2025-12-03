@@ -2,25 +2,74 @@ import { RSSFeedData, PodcastShow, PodcastEpisode, Author } from '@/types/podcas
 import { RSS_CONFIG, retryOperation } from './rssConfig';
 import * as xml2js from 'xml2js';
 
-const PODCAST_RSS_FEEDS = [
-	'https://feeds.captivate.fm/la-voluntad-de-la-pampa/',
-	'https://feeds.captivate.fm/polvora-en-abril/',
-	'https://feeds.captivate.fm/libertad-al-amanecer/',
-	'https://feeds.captivate.fm/rockandlocuras/',
-	'https://feeds.captivate.fm/ride-on/',
+// Metadatos locales de podcasts
+interface PodcastMetadata {
+	rssUrl: string;
+	title: string;
+	description: string;
+	imageUrl: string;
+	author: string;
+	schedule: string;
+}
+
+const PODCAST_METADATA: PodcastMetadata[] = [
+	{
+		rssUrl: 'https://feeds.captivate.fm/ride-on/',
+		title: 'Ride On',
+		description: 'Extrovertida, amena, y auténtica. Esa es Stella. Ella nos acompaña de Lunes a Viernes con noticias de actualidad, buena música, y humor, agregándole el ingrediente extra que alegra las tardes y noches, mientras nos alistamos para regresar a casa y terminar el día.',
+		imageUrl: '/assets/programas/RideOn.avif',
+		author: 'Stella Peralta',
+		schedule: 'Lunes a Viernes | 5 PM - 7 PM'
+	},
+	{
+		rssUrl: 'https://feeds.captivate.fm/rockandlocuras/',
+		title: 'Rock and Locuras',
+		description: '¡El espacio para los roqueros! Danilo Jiménez nos da la receta musical del fin de semana con Una hora llena de energía y buen rock. presentamos los mejores éxitos del hard rock que se consolidaron desde la década de 1970.',
+		imageUrl: '/assets/programas/RockandLocuras.avif',
+		author: 'DR. FEELGOOD',
+		schedule: 'Sábados | 1 PM'
+	},
+	{
+		rssUrl: '',
+		title: 'Break de la Tarde',
+		description: '¡Nos tomamos un break en compañía de Miguel Monge! la voz icónica de Radio 2 que nos informa sobre el mundo del entretenimiento con una actitud positiva y nuestros éxitos favoritos.\n\nEl "break" es una ventana a los oyentes de la Dos para vincularse con la radio por medio de WhatsApp y las redes, con una dinámica ágil e interactiva.',
+		imageUrl: '/assets/programas/BreakdelaTarde.avif',
+		author: 'Miguel Monge',
+		schedule: 'Lunes a Viernes | 3 PM - 4 PM'
+	},
+	{
+		rssUrl: '',
+		title: 'Morning Sounds with Sammy',
+		description: 'Sammy regresa nuevamente al equipo de Radio Dos con un nuevo programa para que te acompañe con buena energía en las mañanas. Sammy te llevará a una emocionante aventura musical explorando sonidos desde la década de 1960 hasta hoy. Sus géneros musicales favoritos son: rock, pop, new wave, post-punk, soul y funk.',
+		imageUrl: '/assets/programas/programasR2.avif',
+		author: 'SAMANTHA BLACK',
+		schedule: 'Lunes a Viernes | 6 AM - 8 AM'
+	},
+	{
+		rssUrl: '',
+		title: 'Sunshine Reggae',
+		description: 'Lo mejor del reggae y roots tiene su espacio en radio dos con Óscar Ortiz los sábados a las 4 pm. presentamos los mejores éxitos del reggae clásico, roots, dance hall y más.',
+		imageUrl: '/assets/programas/SunshineReggae.avif',
+		author: 'ÓSCAR ORTIZ - MR. RASTA',
+		schedule: 'Sábados | 4 PM'
+	},
+	{
+		rssUrl: '',
+		title: 'Full Mix',
+		description: 'Un espacio para escuchar las mejores mezclas profesional al estilo de las famosas discotecas.',
+		imageUrl: '/assets/programas/programasR2.avif',
+		author: 'MARIO CASTRO',
+		schedule: 'Sábados | 11 AM - 12 MD'
+	},
+	{
+		rssUrl: '',
+		title: 'Ola Futura',
+		description: 'Stella Peralta nos regala una dosis de lo mejor de la música alternativa. Ola futura es un micro informativo que se programa varias veces al día, con información de artistas y lanzamientos, y joyas de la música que a menudo no reciben suficiente atención.',
+		imageUrl: '/assets/programas/OlaFutura.avif',
+		author: 'STELLA PERALTA',
+		schedule: 'MICROS'
+	}
 ];
-
-// Configuración de horarios para podcasts
-const PODCAST_SCHEDULES: { [url: string]: string } = {
-	'https://feeds.captivate.fm/la-voluntad-de-la-pampa/': 'Lunes a Viernes | 6 AM - 8 AM',
-	'https://feeds.captivate.fm/polvora-en-abril/': 'Lunes a Viernes | 8 AM - 10 AM',
-	'https://feeds.captivate.fm/libertad-al-amanecer/': 'Sábados | 10 AM - 12 PM',
-	'https://feeds.captivate.fm/rockandlocuras/': 'Sábados | 1 PM',
-	'https://feeds.captivate.fm/ride-on/': 'Lunes a Viernes | 5 PM - 7 PM',
-};
-
-// Sin autores por ahora
-const PODCAST_AUTHORS: { [podcastUrl: string]: Author[] } = {};
 
 class RSSService {
 	private static instance: RSSService;
@@ -193,43 +242,64 @@ class RSSService {
 	async getAllPodcasts(): Promise<PodcastShow[]> {
 		const shows: PodcastShow[] = [];
 		const BATCH_SIZE = RSS_CONFIG.BATCH_SIZE;
-		for (let i = 0; i < PODCAST_RSS_FEEDS.length; i += BATCH_SIZE) {
-			const batch = PODCAST_RSS_FEEDS.slice(i, i + BATCH_SIZE);
-			const batchPromises = batch.map(async (rssUrl) => {
+		for (let i = 0; i < PODCAST_METADATA.length; i += BATCH_SIZE) {
+			const batch = PODCAST_METADATA.slice(i, i + BATCH_SIZE);
+			const batchPromises = batch.map(async (metadata) => {
 				try {
-					const feedData = await this.fetchRSSFeed(rssUrl);
-					const schedule = PODCAST_SCHEDULES[rssUrl] || 'Horario no disponible';
-					
+					// If no RSS URL, use only local metadata
+					if (!metadata.rssUrl) {
+						const show: PodcastShow = {
+							id: this.generateIdFromTitle(metadata.title),
+							title: metadata.title,
+							description: metadata.description,
+							imageUrl: metadata.imageUrl,
+							link: '',
+							rssUrl: '',
+							language: 'es',
+							author: metadata.author,
+							category: undefined,
+							lastBuildDate: undefined,
+							authors: [],
+							schedule: metadata.schedule
+						};
+						return show;
+					}
+
+					// Fetch RSS feed to validate it works and get lastBuildDate
+					const feedData = await this.fetchRSSFeed(metadata.rssUrl);
+
+					// Use local metadata, only get lastBuildDate and language from RSS
 					const show: PodcastShow = {
-						id: this.generateIdFromUrl(rssUrl),
-						title: feedData.title,
-						description: feedData.description,
-						imageUrl: feedData.image,
-						link: feedData.link,
-						rssUrl: rssUrl,
-						language: feedData.language,
-						author: feedData.author,
+						id: this.generateIdFromUrl(metadata.rssUrl),
+						title: metadata.title,
+						description: metadata.description,
+						imageUrl: metadata.imageUrl,
+						link: metadata.rssUrl,
+						rssUrl: metadata.rssUrl,
+						language: feedData.language || 'es',
+						author: metadata.author,
 						category: feedData.category,
 						lastBuildDate: feedData.lastBuildDate,
 						authors: [],
-						schedule: schedule
+						schedule: metadata.schedule
 					};
 					return show;
 				} catch (error) {
-					console.error(`Error al procesar podcast ${rssUrl}:`, error);
+					console.error(`Error al procesar podcast ${metadata.rssUrl}:`, error);
+					// Fallback to local metadata even if RSS fails
 					const fallbackShow: PodcastShow = {
-						id: this.generateIdFromUrl(rssUrl),
-						title: 'Podcast',
-						description: 'Información temporalmente no disponible',
-						imageUrl: '/assets/autores/EmmaTristan.jpeg',
-						link: rssUrl,
-						rssUrl: rssUrl,
+						id: this.generateIdFromUrl(metadata.rssUrl) || this.generateIdFromTitle(metadata.title),
+						title: metadata.title || 'Podcast',
+						description: metadata.description || 'Información temporalmente no disponible',
+						imageUrl: metadata.imageUrl || '/assets/autores/EmmaTristan.jpeg',
+						link: metadata.rssUrl,
+						rssUrl: metadata.rssUrl,
 						language: 'es',
-						author: undefined,
+						author: metadata.author,
 						category: undefined,
 						lastBuildDate: undefined,
 						authors: [],
-						schedule: 'Horario no disponible'
+						schedule: metadata.schedule || 'Horario no disponible'
 					};
 					return fallbackShow;
 				}
@@ -240,7 +310,7 @@ class RSSService {
 					shows.push(result.value);
 				}
 			});
-			if (i + BATCH_SIZE < PODCAST_RSS_FEEDS.length) {
+			if (i + BATCH_SIZE < PODCAST_METADATA.length) {
 				await new Promise(resolve => setTimeout(resolve, RSS_CONFIG.BATCH_DELAY));
 			}
 		}
@@ -252,6 +322,11 @@ class RSSService {
 
 	async getPodcastEpisodes(rssUrl: string): Promise<PodcastEpisode[]> {
 		try {
+			// If no RSS URL, return empty array
+			if (!rssUrl) {
+				return [];
+			}
+
 			const feedData = await this.fetchRSSFeed(rssUrl);
 			const showId = this.generateIdFromUrl(rssUrl);
 			return feedData.episodes.map(episode => ({
@@ -306,13 +381,21 @@ class RSSService {
 	}
 
 	static addPodcastRSS(rssUrl: string) {
-		if (!PODCAST_RSS_FEEDS.includes(rssUrl)) {
-			PODCAST_RSS_FEEDS.push(rssUrl);
+		const exists = PODCAST_METADATA.some(p => p.rssUrl === rssUrl);
+		if (!exists) {
+			PODCAST_METADATA.push({
+				rssUrl,
+				title: 'New Podcast',
+				description: '',
+				imageUrl: '',
+				author: '',
+				schedule: 'Horario no disponible'
+			});
 		}
 	}
 
 	static getRSSFeeds(): string[] {
-		return [...PODCAST_RSS_FEEDS];
+		return PODCAST_METADATA.map(p => p.rssUrl);
 	}
 
 	// Funciones de autores: no-op / sin autores
