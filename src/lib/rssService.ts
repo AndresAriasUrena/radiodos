@@ -54,12 +54,12 @@ const PODCAST_METADATA: PodcastMetadata[] = [
 		schedule: 'Sábados | 4 PM'
 	},
 	{
-		rssUrl: '',
-		title: 'Full Mix',
-		description: 'Un espacio para escuchar las mejores mezclas profesional al estilo de las famosas discotecas.',
-		imageUrl: '/assets/programas/programasR2.avif',
-		author: 'MARIO CASTRO',
-		schedule: 'Sábados | 11 AM - 12 MD'
+		rssUrl: 'https://feeds.captivate.fm/los-anos-dorados/',
+		title: 'Los Años Dorados',
+		description: 'Programa de radio de éxitos de los 60s y los 70s',
+		imageUrl: '/assets/programas/annos-dorados.avif',
+		author: 'Eliecer Barrantes',
+		schedule: 'Martes y Jueves | 7 PM - Repetición: Domingo | 10 AM'
 	},
 	{
 		rssUrl: '',
