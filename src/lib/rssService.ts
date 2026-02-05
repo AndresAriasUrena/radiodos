@@ -46,7 +46,7 @@ const PODCAST_METADATA: PodcastMetadata[] = [
 		schedule: 'Lunes a Viernes | 6 AM - 8 AM'
 	},
 	{
-		rssUrl: '',
+		rssUrl: 'https://feeds.captivate.fm/sunshine-reggae/',
 		title: 'Sunshine Reggae',
 		description: 'Lo mejor del reggae y roots tiene su espacio en radio dos con Óscar Ortiz los sábados a las 4 pm. presentamos los mejores éxitos del reggae clásico, roots, dance hall y más.',
 		imageUrl: '/assets/programas/SunshineReggae.avif',
