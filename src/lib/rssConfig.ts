@@ -12,15 +12,6 @@ export const RSS_CONFIG = {
   // Delay entre reintentos (en milisegundos) - Reducido
   RETRY_DELAY: 800,
   
-  // Servicios proxy disponibles (en orden de preferencia)
-  PROXY_SERVICES: [
-    'https://corsproxy.io/?',  // Este parece funcionar mejor
-    'https://api.codetabs.com/v1/proxy?quest=',
-    'https://api.allorigins.win/get?url=',
-    'https://cors-anywhere.herokuapp.com/',
-    'https://thingproxy.freeboard.io/fetch/'  // Este último por los certificados expirados
-  ],
-  
   // Headers para las peticiones
   REQUEST_HEADERS: {
     'User-Agent': 'Mozilla/5.0 (compatible; RSS-Reader/1.0)',

@@ -5,60 +5,32 @@ import { RSS_CONFIG } from '@/lib/rssConfig';
 const cache = new Map<string, { content: string; timestamp: number }>();
 const CACHE_DURATION = RSS_CONFIG.CACHE_DURATION;
 
-async function fetchWithProxy(url: string, proxyIndex: number = 0): Promise<string> {
-  if (proxyIndex >= RSS_CONFIG.PROXY_SERVICES.length) {
-    throw new Error('Todos los servicios proxy fallaron');
-  }
+async function fetchRSSDirect(url: string): Promise<string> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), RSS_CONFIG.REQUEST_TIMEOUT);
 
-  const proxyUrl = RSS_CONFIG.PROXY_SERVICES[proxyIndex] + encodeURIComponent(url);
-  
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), RSS_CONFIG.REQUEST_TIMEOUT);
-    
-    
-    const response = await fetch(proxyUrl, {
+    const response = await fetch(url, {
       signal: controller.signal,
       headers: RSS_CONFIG.REQUEST_HEADERS,
-      // Ignorar errores de certificados para ciertos proxies
-      ...(proxyUrl.includes('thingproxy.freeboard.io') ? { rejectUnauthorized: false } : {})
     });
-    
+
     clearTimeout(timeoutId);
-    
-    
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-    
-    // Obtener el contenido como texto primero
+
     const responseText = await response.text();
-    
-    // Verificar si el contenido está vacío
+
     if (!responseText || responseText.trim() === '') {
-      throw new Error('Respuesta vacía del proxy');
+      throw new Error('Respuesta vacía del feed');
     }
-    
-    // Verificar si es XML directo o JSON
-    if (responseText.trim().startsWith('<?xml') || responseText.trim().startsWith('<rss')) {
-      return responseText;
-    } else {
-      // Intentar parsear como JSON
-      try {
-        const data = JSON.parse(responseText);
-        const content = data.contents || data;
-        if (!content || (typeof content === 'string' && content.trim() === '')) {
-          throw new Error('Contenido vacío en respuesta JSON');
-        }
-        return content;
-      } catch (jsonError) {
-        return responseText;
-      }
-    }
+
+    return responseText;
   } catch (error) {
-    console.warn(`❌ Proxy ${proxyIndex + 1} falló para ${url}:`, error);
-    // Intentar con el siguiente proxy
-    return fetchWithProxy(url, proxyIndex + 1);
+    clearTimeout(timeoutId);
+    throw error;
   }
 }
 
@@ -85,7 +57,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const rssContent = await fetchWithProxy(url);
+    const rssContent = await fetchRSSDirect(url);
     
     if (!rssContent || rssContent.trim() === '') {
       throw new Error('No se pudo obtener contenido del RSS feed');
