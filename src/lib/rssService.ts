@@ -1,6 +1,5 @@
 import { RSSFeedData, PodcastShow, PodcastEpisode, Author } from '@/types/podcast';
 import { RSS_CONFIG, retryOperation } from './rssConfig';
-import * as xml2js from 'xml2js';
 
 // Metadatos locales de podcasts
 interface PodcastMetadata {
@@ -75,8 +74,6 @@ class RSSService {
 	private static instance: RSSService;
 	private cache: Map<string, { data: RSSFeedData; timestamp: number }> = new Map();
 	private requestQueue: Map<string, Promise<RSSFeedData>> = new Map();
-	private lastRequestTime: number = 0;
-	private readonly MIN_REQUEST_INTERVAL = RSS_CONFIG.MIN_REQUEST_INTERVAL;
 	private readonly CACHE_DURATION = RSS_CONFIG.CACHE_DURATION;
 
 	static getInstance(): RSSService {
@@ -86,142 +83,29 @@ class RSSService {
 		return RSSService.instance;
 	}
 
-	private async parseRSSXML(xmlString: string): Promise<RSSFeedData> {
-		return new Promise((resolve, reject) => {
-			const parser = new xml2js.Parser({
-				explicitArray: false,
-				ignoreAttrs: false,
-				mergeAttrs: true
-			});
-
-			parser.parseString(xmlString, (err, result) => {
-				if (err) {
-					reject(new Error(`Error parsing XML: ${err.message}`));
-					return;
-				}
-
-				try {
-					// Soporte RSS clásico
-					if (result.rss && result.rss.channel) {
-						const rss = result.rss;
-						const channel = rss.channel;
-						const title = channel.title || '';
-						const description = channel.description || '';
-						const link = channel.link || '';
-						const language = channel.language || undefined;
-						const author = channel.author || channel['itunes:author'] || undefined;
-						const category = channel.category || (channel['itunes:category'] && channel['itunes:category'].text) || undefined;
-						const lastBuildDate = channel.lastBuildDate || undefined;
-
-						let image = '';
-						if (channel['itunes:image'] && channel['itunes:image'].href) {
-							image = channel['itunes:image'].href;
-						} else if (channel.image && channel.image.url) {
-							image = channel.image.url;
-						}
-
-						const items = Array.isArray(channel.item) ? channel.item : [channel.item].filter(Boolean);
-						const episodes = items.map((item: any) => {
-							const episodeTitle = item.title || '';
-							const episodeDescription = item.description || '';
-							const pubDate = item.pubDate || '';
-							const guid = item.guid || '';
-							let audioUrl = '';
-							if (item.enclosure && item.enclosure.url) {
-								audioUrl = item.enclosure.url;
-							} else if (item['media:content'] && item['media:content'].url) {
-								audioUrl = item['media:content'].url;
-							}
-							let duration = '';
-							if (item['itunes:duration']) {
-								const durationText = item['itunes:duration'];
-								if (durationText && !durationText.includes(':')) {
-									const totalSeconds = parseInt(durationText);
-									if (!isNaN(totalSeconds)) {
-										const hours = Math.floor(totalSeconds / 3600);
-										const minutes = Math.floor((totalSeconds % 3600) / 60);
-										const seconds = totalSeconds % 60;
-										if (hours > 0) {
-											duration = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-										} else {
-											duration = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-										}
-									} else {
-										duration = durationText;
-									}
-								} else {
-									duration = durationText || '00:00';
-								}
-							}
-
-							return {
-								title: episodeTitle,
-								description: episodeDescription,
-								audioUrl,
-								duration: duration || '00:00',
-								pubDate,
-								guid
-							};
-						});
-
-						resolve({
-							title,
-							description,
-							image,
-							link,
-							language,
-							author,
-							category,
-							lastBuildDate,
-							episodes
-						});
-						return;
-					}
-
-					reject(new Error('Formato de feed no soportado'));
-				} catch (error) {
-					reject(new Error(`Error processing RSS data: ${(error as Error).message}`));
-				}
-			});
-		});
-	}
-
 	private async fetchRSSFeed(url: string): Promise<RSSFeedData> {
-		// Verificar si ya hay una petición en curso para esta URL
+		// Deduplicate concurrent requests for the same URL
 		const existingRequest = this.requestQueue.get(url);
 		if (existingRequest) {
 			return existingRequest;
 		}
 
-		// Verificar caché
+		// Client-side cache check
 		const cached = this.cache.get(url);
 		if (cached && Date.now() - cached.timestamp < RSS_CONFIG.CACHE_DURATION) {
 			return cached.data;
 		}
 
-		// Rate limiting
-		const now = Date.now();
-		const timeSinceLastRequest = now - this.lastRequestTime;
-		if (timeSinceLastRequest < this.MIN_REQUEST_INTERVAL) {
-			const waitTime = this.MIN_REQUEST_INTERVAL - timeSinceLastRequest;
-			await new Promise(resolve => setTimeout(resolve, waitTime));
-		}
-		this.lastRequestTime = Date.now();
-
 		const requestPromise = retryOperation(async () => {
 			const apiUrl = `/api/rss?url=${encodeURIComponent(url)}`;
-			const response = await fetch(apiUrl, {
-				headers: { 'Content-Type': 'application/json' },
-				next: { revalidate: 300 }
-			});
+			const response = await fetch(apiUrl);
 			if (!response.ok) {
 				throw new Error(`Error HTTP: ${response.status}`);
 			}
-			const data = await response.json();
-			if (data.error) {
-				throw new Error(data.error);
+			const rssData: RSSFeedData = await response.json();
+			if ((rssData as any).error) {
+				throw new Error((rssData as any).error);
 			}
-			const rssData = await this.parseRSSXML(data.content);
 			this.cache.set(url, { data: rssData, timestamp: Date.now() });
 			return rssData;
 		}, RSS_CONFIG.MAX_RETRIES, RSS_CONFIG.RETRY_DELAY);
@@ -240,83 +124,36 @@ class RSSService {
 	}
 
 	async getAllPodcasts(): Promise<PodcastShow[]> {
-		const shows: PodcastShow[] = [];
-		const BATCH_SIZE = RSS_CONFIG.BATCH_SIZE;
-		for (let i = 0; i < PODCAST_METADATA.length; i += BATCH_SIZE) {
-			const batch = PODCAST_METADATA.slice(i, i + BATCH_SIZE);
-			const batchPromises = batch.map(async (metadata) => {
-				try {
-					// If no RSS URL, use only local metadata
-					if (!metadata.rssUrl) {
-						const show: PodcastShow = {
-							id: this.generateIdFromTitle(metadata.title),
-							title: metadata.title,
-							description: metadata.description,
-							imageUrl: metadata.imageUrl,
-							link: '',
-							rssUrl: '',
-							language: 'es',
-							author: metadata.author,
-							category: undefined,
-							lastBuildDate: undefined,
-							authors: [],
-							schedule: metadata.schedule
-						};
-						return show;
-					}
+		// Build list from local metadata instantly — no network requests needed for the list UI.
+		const shows: PodcastShow[] = PODCAST_METADATA.map((metadata) => ({
+			id: metadata.rssUrl
+				? this.generateIdFromUrl(metadata.rssUrl)
+				: this.generateIdFromTitle(metadata.title),
+			title: metadata.title,
+			description: metadata.description,
+			imageUrl: metadata.imageUrl,
+			link: metadata.rssUrl,
+			rssUrl: metadata.rssUrl,
+			language: 'es',
+			author: metadata.author,
+			category: undefined,
+			lastBuildDate: undefined,
+			authors: [],
+			schedule: metadata.schedule
+		}));
 
-					// Fetch RSS feed to validate it works and get lastBuildDate
-					const feedData = await this.fetchRSSFeed(metadata.rssUrl);
-
-					// Use local metadata, only get lastBuildDate and language from RSS
-					const show: PodcastShow = {
-						id: this.generateIdFromUrl(metadata.rssUrl),
-						title: metadata.title,
-						description: metadata.description,
-						imageUrl: metadata.imageUrl,
-						link: metadata.rssUrl,
-						rssUrl: metadata.rssUrl,
-						language: feedData.language || 'es',
-						author: metadata.author,
-						category: feedData.category,
-						lastBuildDate: feedData.lastBuildDate,
-						authors: [],
-						schedule: metadata.schedule
-					};
-					return show;
-				} catch (error) {
-					console.error(`Error al procesar podcast ${metadata.rssUrl}:`, error);
-					// Fallback to local metadata even if RSS fails
-					const fallbackShow: PodcastShow = {
-						id: this.generateIdFromUrl(metadata.rssUrl) || this.generateIdFromTitle(metadata.title),
-						title: metadata.title || 'Podcast',
-						description: metadata.description || 'Información temporalmente no disponible',
-						imageUrl: metadata.imageUrl || '/assets/autores/EmmaTristan.jpeg',
-						link: metadata.rssUrl,
-						rssUrl: metadata.rssUrl,
-						language: 'es',
-						author: metadata.author,
-						category: undefined,
-						lastBuildDate: undefined,
-						authors: [],
-						schedule: metadata.schedule || 'Horario no disponible'
-					};
-					return fallbackShow;
-				}
-			});
-			const results = await Promise.allSettled(batchPromises);
-			results.forEach(result => {
-				if (result.status === 'fulfilled' && result.value) {
-					shows.push(result.value);
-				}
-			});
-			if (i + BATCH_SIZE < PODCAST_METADATA.length) {
-				await new Promise(resolve => setTimeout(resolve, RSS_CONFIG.BATCH_DELAY));
-			}
-		}
 		if (shows.length === 0) {
 			throw new Error('No se pudo cargar ningún podcast. Verifica tu conexión a internet.');
 		}
+
+		// Warm the RSS cache in background so episodes are ready when the user selects a podcast.
+		// fetchRSSFeed deduplicates concurrent requests, so getPodcastEpisodes() will share the same fetch.
+		for (const metadata of PODCAST_METADATA) {
+			if (metadata.rssUrl) {
+				this.fetchRSSFeed(metadata.rssUrl).catch(() => {});
+			}
+		}
+
 		return shows;
 	}
 
