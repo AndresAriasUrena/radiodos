@@ -49,7 +49,7 @@ const Footer = () => {
                         </div>
                     </div>
                 </div>
-                <a href="https://aurigital.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 mt-4 bg-[#D92A34] px-3 py-1.5 rounded-full hover:opacity-70 transition-opacity">
+                <a href="https://aurigital.com?utm_source=radiodos&utm_medium=footer&utm_campaign=branding" target="_blank" rel="noopener" className="inline-flex items-center gap-1.5 mt-4 bg-[#D92A34] px-3 py-1.5 rounded-full hover:opacity-70 transition-opacity">
                     <span className="text-[#FFFFFF] text-xs font-medium">Creado por Aurigital</span>
                     <img src="/isotipo.avif" alt="Aurigital" className="h-5 w-5" />
                 </a>
