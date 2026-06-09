@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   Play, Pause, Volume2, VolumeX,
   SkipBack, SkipForward,
-  Maximize2, Minimize2,
+  ChevronUp, ChevronDown,
   List,
 } from 'lucide-react';
 import { usePlayer } from '@/lib/PlayerContext';
@@ -62,7 +63,12 @@ export default function RadioPlayer() {
   const [duration, setDuration] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isContainerFull, setIsContainerFull] = useState(false);
   const [mobileView, setMobileView] = useState<'player' | 'tracklist'>('player');
+
+  const openExpanded = useCallback(() => { setIsContainerFull(true); setIsExpanded(true); }, []);
+  const closeExpanded = useCallback(() => { setIsExpanded(false); }, []);
+  const toggleExpanded = useCallback(() => { isExpanded ? closeExpanded() : openExpanded(); }, [isExpanded, openExpanded, closeExpanded]);
 
   const [radioStatus, setRadioStatus] = useState<RadioStatus | null>(null);
   const [elapsedStr, setElapsedStr] = useState('0:00');
@@ -362,8 +368,8 @@ export default function RadioPlayer() {
   /* ════════════════════════════════════════════════════════ */
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-50 flex flex-col text-white overflow-hidden"
-      style={{ height: isExpanded ? '100dvh' : 'auto', background: '#0a0a0a' }}
+      className="fixed bottom-0 left-0 right-0 z-50 flex flex-col text-white"
+      style={{ height: isContainerFull ? '100dvh' : 'auto' }}
     >
       {/* Radio — ligado al grafo de Web Audio. crossOrigin para que el analizador lea datos reales */}
       <audio
@@ -388,8 +394,16 @@ export default function RadioPlayer() {
       />
 
       {/* ══ EXPANDED ══════════════════════════════════════════ */}
+      <AnimatePresence onExitComplete={() => setIsContainerFull(false)}>
       {isExpanded && (
-        <>
+        <motion.div
+          key="expanded-panel"
+          initial={{ y: '100%' }}
+          animate={{ y: 0 }}
+          exit={{ y: '100%' }}
+          transition={{ type: 'spring', damping: 30, stiffness: 280, mass: 0.85 }}
+          className="flex-1 min-h-0 flex flex-col overflow-hidden bg-[#0a0a0a]"
+        >
           {/* ── Desktop expanded (lg+) ── */}
           <div className="hidden lg:flex flex-1 min-h-0 border-b border-[#262626] overflow-hidden">
 
@@ -538,11 +552,35 @@ export default function RadioPlayer() {
               </div>
             )}
           </div>
-        </>
+        </motion.div>
       )}
+      </AnimatePresence>
 
       {/* ══ BOTTOM BAR ════════════════════════════════════════ */}
-      <div className="border-t border-[#2a2a2a] shrink-0">
+      <div className="border-t border-[#2a2a2a] shrink-0 relative bg-[#0a0a0a]">
+        <style>{`
+          @keyframes bounce-hint {
+            0%, 55%  { transform: translateY(0); }
+            60%      { transform: translateY(-10px); }
+            65%      { transform: translateY(0); }
+            70%      { transform: translateY(-6px); }
+            75%      { transform: translateY(0); }
+            80%      { transform: translateY(-3px); }
+            83%      { transform: translateY(0); }
+            100%     { transform: translateY(0); }
+          }
+        `}</style>
+        {/* Floating expand button — centered on the top border, bounces periodically */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+          <button
+            onClick={() => handlePlay(toggleExpanded)}
+            style={{ animation: 'bounce-hint 4s ease-in-out infinite' }}
+            className="size-9 rounded-full bg-[#D92A34] flex items-center justify-center shadow-[0_0_14px_rgba(217,42,52,0.55)] hover:bg-[#b91c27] transition-colors"
+            aria-label={isExpanded ? 'Contraer player' : 'Expandir player'}
+          >
+            {isExpanded ? <ChevronDown className="size-5 text-white" /> : <ChevronUp className="size-5 text-white" />}
+          </button>
+        </div>
         {playerState.type === 'podcast' && (
           <div ref={progressBarRef} className="w-full h-[2px] bg-white/20 cursor-pointer group relative"
             onClick={e => seek(e.clientX)} onMouseDown={e => { setIsDragging(true); seek(e.clientX); }}>
@@ -560,12 +598,9 @@ export default function RadioPlayer() {
           >
             {isLoading ? <div className="size-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : playerState.isPlaying ? <Pause className="size-4" /> : <Play className="size-4" />}
           </button>
-          <button onClick={() => { setMobileView(v => v === 'player' ? 'tracklist' : 'player'); if (!isExpanded) setIsExpanded(true); }}
+          <button onClick={() => { setMobileView(v => v === 'player' ? 'tracklist' : 'player'); if (!isExpanded) openExpanded(); }}
             className={`transition-colors ${mobileView === 'tracklist' && isExpanded ? 'text-white' : 'text-white/60 hover:text-white'}`}>
             <List className="size-5" />
-          </button>
-          <button onClick={() => handlePlay(() => setIsExpanded(x => !x))} className="text-white/60 hover:text-white transition-colors">
-            {isExpanded ? <Minimize2 className="size-5" /> : <Maximize2 className="size-5" />}
           </button>
         </div>
 
@@ -628,9 +663,6 @@ export default function RadioPlayer() {
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
               </div>
             </div>
-            <button onClick={() => handlePlay(() => setIsExpanded(x => !x))} className="text-white/60 hover:text-white">
-              {isExpanded ? <Minimize2 className="size-[14px]" /> : <Maximize2 className="size-[14px]" />}
-            </button>
           </div>
         </div>
       </div>
