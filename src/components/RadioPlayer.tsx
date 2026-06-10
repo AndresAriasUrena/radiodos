@@ -195,10 +195,13 @@ export default function RadioPlayer() {
       rafRef.current = requestAnimationFrame(frame);
       phase += 0.035;
       const smoothed = smoothedRef.current!;
-      const W = canvas.width, H = canvas.height;
+      const dpr = window.devicePixelRatio || 1;
+      const W = canvas.width;
+      const H = canvas.height;
       ctx.clearRect(0, 0, W, H);
-      const gap = 3;
-      const bw = (W - gap * (BAR_COUNT - 1)) / BAR_COUNT;
+      const gap = Math.round(3 * dpr);
+      // floor para que bw sea entero — evita sub-pixel blur en los bordes
+      const bw = Math.floor((W - gap * (BAR_COUNT - 1)) / BAR_COUNT);
 
       const analyser = analyserRef.current;
       let freqData: Uint8Array<ArrayBuffer> | null = null;
@@ -218,11 +221,12 @@ export default function RadioPlayer() {
           raw = Math.exp(-norm * norm * 2.5) * (0.25 + Math.sin(phase + i * 0.3) * 0.1 + Math.sin(phase * 0.7 + i * 0.5) * 0.07);
         }
         smoothed[i] = raw > smoothed[i] ? smoothed[i] * 0.2 + raw * 0.8 : smoothed[i] * 0.88;
-        const bh = Math.max(2, smoothed[i] * H * 0.95);
+        const bh = Math.max(Math.round(2 * dpr), Math.round(smoothed[i] * H * 0.95));
+        const x = Math.round(i * (bw + gap));
         ctx.fillStyle = '#D92A34';
         ctx.beginPath();
-        if (ctx.roundRect) ctx.roundRect(i * (bw + gap), H - bh, bw, bh, 2);
-        else ctx.rect(i * (bw + gap), H - bh, bw, bh);
+        if (ctx.roundRect) ctx.roundRect(x, H - bh, bw, bh, Math.round(2 * dpr));
+        else ctx.rect(x, H - bh, bw, bh);
         ctx.fill();
       }
     };
@@ -230,12 +234,27 @@ export default function RadioPlayer() {
   }, []);
 
   useEffect(() => {
+    if (!isExpanded) return; // canvas solo existe en el DOM cuando isExpanded es true
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ro = new ResizeObserver(() => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; });
+    const setSize = () => {
+      const dpr = window.devicePixelRatio || 1;
+      const w = Math.round(canvas.offsetWidth * dpr);
+      const h = Math.round(canvas.offsetHeight * dpr);
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+      }
+    };
+    setSize();
+    let rafId = 0;
+    const ro = new ResizeObserver(() => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(setSize);
+    });
     ro.observe(canvas);
-    return () => ro.disconnect();
-  }, []);
+    return () => { ro.disconnect(); cancelAnimationFrame(rafId); };
+  }, [isExpanded]);
 
   useEffect(() => {
     if (isExpanded && playerState.isPlaying) {
