@@ -58,13 +58,18 @@ async function fetchAndParse(url: string): Promise<RSSFeedData> {
             }
           }
 
+          const rawGuid = item.guid;
+          const guid = typeof rawGuid === 'object' && rawGuid !== null
+            ? (rawGuid._ || '')
+            : (rawGuid || '');
+
           return {
-            title: item.title || '',
-            description: item.description || '',
+            title: typeof item.title === 'object' ? (item.title._ || '') : (item.title || ''),
+            description: typeof item.description === 'object' ? (item.description._ || '') : (item.description || ''),
             audioUrl,
             duration,
             pubDate: item.pubDate || '',
-            guid: item.guid || '',
+            guid,
           };
         });
 

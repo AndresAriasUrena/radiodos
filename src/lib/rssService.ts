@@ -166,16 +166,24 @@ class RSSService {
 
 			const feedData = await this.fetchRSSFeed(rssUrl);
 			const showId = this.generateIdFromUrl(rssUrl);
-			return feedData.episodes.map(episode => ({
-				id: episode.guid || this.generateIdFromTitle(episode.title),
-				title: episode.title,
-				description: episode.description,
-				audioUrl: episode.audioUrl,
-				duration: episode.duration,
-				pubDate: episode.pubDate,
-				guid: episode.guid,
-				showId
-			}));
+			return feedData.episodes.map((episode, index) => {
+				// xml2js may parse <guid isPermaLink="true">url</guid> as an object { _: "url", isPermaLink: "true" }
+				const rawGuid = episode.guid as unknown;
+				const guidStr = typeof rawGuid === 'object' && rawGuid !== null
+					? ((rawGuid as Record<string, string>)._ || '')
+					: String(rawGuid || '');
+				const id = guidStr || this.generateIdFromTitle(episode.title) || `episode-${showId}-${index}`;
+				return {
+					id,
+					title: episode.title,
+					description: episode.description,
+					audioUrl: episode.audioUrl,
+					duration: episode.duration,
+					pubDate: episode.pubDate,
+					guid: guidStr,
+					showId
+				};
+			});
 		} catch (error) {
 			console.error(`Error al obtener episodios para ${rssUrl}:`, error);
 			return [];
