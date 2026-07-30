@@ -4,13 +4,11 @@ import FilterSidebar from '@/components/news/FilterSidebar';
 import RelatedNewsGrid from '@/components/news/RelatedNewsGrid';
 import WordPressLinkPreview from '@/components/news/WordPressLinkPreview';
 import { notFound } from 'next/navigation';
-import dynamic from 'next/dynamic';
 import WordPressService from '@/lib/wordpressService';
 import { WordPressPost } from '@/types/wordpress';
 import { generatePageMetadata, generateNewsSchema } from '@/lib/seo';
 import JsonLd from '@/components/SEO/JsonLd';
-
-const NewsSectionsSidebar = dynamic(() => import('@/components/news/NewsSectionsSidebar'), { ssr: false });
+import NewsSectionsSidebar from '@/components/news/NewsSectionsSidebarDynamic';
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const post = await getPostBySlug(params.slug);
