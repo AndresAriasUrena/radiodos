@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 
+
 const Footer = () => {
     return (
         <footer className="text-[#9A9A9A] pt-12 pb-20 lg:py-20 border-t-2 border-[#141414]">
