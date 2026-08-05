@@ -4,7 +4,9 @@ import { SearchProvider } from '@/lib/SearchContext'
 import { PlayerProvider } from '@/lib/PlayerContext'
 import RadioPlayer from '@/components/RadioPlayer'
 import Script from 'next/script'
+import { GoogleTagManager } from '@next/third-parties/google'
 import SplashPage from '@/components/SplashPage'  
+
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -76,19 +78,8 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="es-CR" className="overflow-x-hidden">
+      <GoogleTagManager gtmId="GTM-K5Z7M7ZX" />
       <head>
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-ZY4PPFPEJK"
-          strategy="afterInteractive"
-        />
-        <Script id="gtag-init" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-ZY4PPFPEJK');
-          `}
-        </Script>
         <Script
           id="schema-org"
           type="application/ld+json"
