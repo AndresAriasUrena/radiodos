@@ -6,6 +6,7 @@ import { MdVerified } from "react-icons/md";
 import RSSService from "@/lib/rssService";
 import { usePlayer } from "@/lib/PlayerContext";
 
+
 const Hero = () => {
   const [podcasts, setPodcasts] = useState([]);
   const [selected, setSelected] = useState(null);
