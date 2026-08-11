@@ -10,15 +10,16 @@ import { generatePageMetadata, generateNewsSchema } from '@/lib/seo';
 import JsonLd from '@/components/SEO/JsonLd';
 import NewsSectionsSidebar from '@/components/news/NewsSectionsSidebarDynamic';
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const post = await getPostBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
   
   if (!post) {
     return generatePageMetadata({
       title: 'Noticia no encontrada',
       description: 'La noticia que buscas no existe o ha sido eliminada.',
       image: null,
-      path: `/news/${params.slug}`,
+      path: `/news/${slug}`,
       type: 'website',
       publishedTime: null,
       author: null,
@@ -73,8 +74,9 @@ async function getRelatedPosts(categoryId: number, excludeId: number): Promise<W
     return await WordPressService.getRelatedPosts(categoryId, excludeId, 3);
 }
 
-export default async function NewsDetailPage({ params }: { params: { slug: string } }) {
-    const post = await getPostBySlug(params.slug);
+export default async function NewsDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const post = await getPostBySlug(slug);
     if (!post) return notFound();
 
     const featuredImage = WordPressService.getFeaturedImage(post) || '/placeholder-news.jpg';
