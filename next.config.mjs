@@ -82,7 +82,6 @@ const nextConfig = {
     optimizePackageImports: ['lucide-react'],
   },
 
-  output: 'standalone',
 };
 
 export default nextConfig;
