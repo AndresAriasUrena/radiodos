@@ -869,6 +869,9 @@ export default function RadioPlayer() {
                 ) : (
                   <>
                     {/* Radio: current track header */}
+                    <div className="px-4 pt-3 text-[11px] font-semibold text-[#D92A34] uppercase tracking-wider shrink-0 bg-white/[0.08]">
+                      Sonando ahora
+                    </div>
                     <div className="p-4 flex items-center gap-4 border-b border-[#262626] bg-white/[0.08] shrink-0 cursor-pointer hover:bg-white/[0.12] transition-colors" onClick={() => handlePlay(playRadio)}>
                       <div className="relative shrink-0 size-[84px] rounded border border-[#262626] overflow-hidden">
                         {artworkUrl ? <img src={artworkUrl} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full bg-[#1a1a1a]" />}
@@ -889,6 +892,11 @@ export default function RadioPlayer() {
                     </div>
                     {/* Radio history */}
                     <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-white/35">
+                      {history.length > 0 && (
+                        <div className="sticky top-0 z-10 px-4 py-2 text-[11px] font-semibold text-white/40 uppercase tracking-wider bg-[#0a0a0a]/95 backdrop-blur-sm border-b border-[#262626]">
+                          Anteriormente sonó
+                        </div>
+                      )}
                       {history.map((track, i) => {
                         const p = parseTitle(track.title);
                         const img = track.artwork_url || historyArtworks[track.title] || radioStatus?.logo_url;
@@ -964,6 +972,9 @@ export default function RadioPlayer() {
               /* Mobile tracklist view */
               <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-thumb]:rounded-full">
                 {/* Current track */}
+                <div className="px-4 pt-3 text-[11px] font-semibold text-[#D92A34] uppercase tracking-wider bg-white/[0.08]">
+                  Sonando ahora
+                </div>
                 <div className="p-4 flex items-center gap-4 border-b border-[#262626] bg-white/[0.08]">
                   <div className="relative shrink-0 size-[84px] rounded overflow-hidden">
                     {artworkUrl ? <img src={artworkUrl} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full bg-[#1a1a1a]" />}
@@ -982,6 +993,11 @@ export default function RadioPlayer() {
                     </div>
                   </div>
                 </div>
+                {history.length > 0 && (
+                  <div className="sticky top-0 z-10 px-4 py-2 text-[11px] font-semibold text-white/40 uppercase tracking-wider bg-[#0a0a0a]/95 backdrop-blur-sm border-b border-[#262626]">
+                    Anteriormente sonó
+                  </div>
+                )}
                 {history.map((track, i) => {
                   const p = parseTitle(track.title);
                   const img = track.artwork_url || historyArtworks[track.title] || radioStatus?.logo_url;
