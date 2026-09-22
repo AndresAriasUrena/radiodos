@@ -12,7 +12,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'Radio2 - La Nueva Era de la Radio Digital en Costa Rica',
-  description: 'Radio2 - Experimenta la radio del futuro. Música, noticias, deportes y entretenimiento con una perspectiva moderna y dinámica. Transmisión digital 24/7 con la mejor calidad y programación innovadora.',
+  description: 'Radio2 - Una emisora de Grupo Columbia en Costa Rica enfocada en los grandes clásicos que marcaron la historia de la música pero apta para diversidad de generaciones.',
   keywords: 'radio2, radio digital, streaming costa rica, radio online, noticias en vivo, radio moderna, radio interactiva, deportes en vivo, entretenimiento digital, radio streaming, radio 24/7',
   authors: [{ name: 'Radio2' }],
   creator: 'Radio2',
@@ -28,7 +28,7 @@ export const metadata = {
   },
   openGraph: {
     title: 'Radio2 - La Nueva Era de la Radio Digital en Costa Rica',
-    description: 'Experimenta la radio del futuro con Radio2. Música, noticias, deportes y entretenimiento con una perspectiva moderna y dinámica. Transmisión digital 24/7.',
+    description: 'Una emisora de Grupo Columbia en Costa Rica enfocada en los grandes clásicos que marcaron la historia de la música pero apta para diversidad de generaciones.',
     url: 'https://radiodos.com',
     siteName: 'Radio2',
     images: [
@@ -45,7 +45,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Radio2 - La Nueva Era de la Radio Digital en Costa Rica',
-    description: 'Experimenta la radio del futuro. Música, noticias y entretenimiento con una perspectiva moderna y dinámica.',
+    description: 'Una emisora de Grupo Columbia en Costa Rica enfocada en los grandes clásicos que marcaron la historia de la música pero apta para diversidad de generaciones.',
     creator: '@radiodos',
     images: ['/opengraph-image.jpg'],
   },
@@ -89,7 +89,7 @@ export default function RootLayout({ children }) {
             "@context": "https://schema.org",
             "@type": "RadioStation",
             "name": "Radio2",
-            "description": "La nueva era de la radio digital en Costa Rica. Música, noticias y entretenimiento con una perspectiva moderna y dinámica.",
+            "description": "Una emisora de Grupo Columbia en Costa Rica enfocada en los grandes clásicos que marcaron la historia de la música pero apta para diversidad de generaciones.",
             "url": "https://radiodos.com",
             "logo": "https://radiodos.com/assets/LogoRadio2.svg",
             "sameAs": [

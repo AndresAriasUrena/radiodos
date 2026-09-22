@@ -1,7 +1,7 @@
 const siteConfig = {
   siteName: 'Radio2',
   siteUrl: 'https://radiodos.com/',
-  description: 'Radio2 - La nueva era de la radio digital en Costa Rica. Disfruta de música, noticias, deportes y entretenimiento con una experiencia moderna y dinámica. Transmitiendo 24/7 con la mejor calidad y programación innovadora.',
+  description: 'Radio2 - Una emisora de Grupo Columbia en Costa Rica enfocada en los grandes clásicos que marcaron la historia de la música pero apta para diversidad de generaciones.',
   keywords: 'radio2, radio digital costa rica, radio online, streaming de música, noticias en vivo, radio moderna, radio interactiva, deportes en vivo, entretenimiento digital, radio streaming, radio 24/7, radio costarricense',
   author: 'Radio2',
   twitterHandle: '@radiodos',
