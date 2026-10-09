@@ -67,7 +67,7 @@ const ContactForm = () => {
           <p className="text-[#FFFFFF]/60 text-lg my-6 max-w-lg">
             Puede comunicarse con nosotros por los diferentes medios disponibles. También puedes llenar el formulario y pronto un asesor se comunicará con tu petición.
           </p>
-          <div className="flex flex-col lg:flex-row gap-4 w-full items-center lg:items-start">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-x-8 gap-y-5 w-full items-center sm:items-start justify-center lg:justify-start">
             <div className="text-center lg:text-left">
               <p className="font-semibold text-[#FFFFFF]/80 mb-1">Centro de llamadas</p>
               <p className="text-[#FFFFFF]/50 text-md">Comunícate en el horario de<br />
